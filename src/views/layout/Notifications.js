@@ -82,7 +82,7 @@ const Notifications = () => {
             newPublications.map(
               async ({ title }) =>
                 await notificationsService.notifyFolloweers({
-                  scholarId: user.scholarId,
+                  authorId: user.authorId,
                   publication: title,
                   followedUserId: user.user_id,
                   currentPublications,

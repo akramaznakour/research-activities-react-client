@@ -17,8 +17,8 @@ const Publication = ({ author, publication, updatePublication, index }) => {
     try {
       setIsLoading(true);
       const response = await scraperService.getPublicationData(
-        author.scholarId,
-        publication.title
+        author.authorId,
+        publication.title.replace("/", "@").split("@")[0]
       );
       if (response.data.error) {
         setNoResultFound(true);
