@@ -28,13 +28,19 @@ function AppProvider({ children }) {
   }, [user]);
 
   const pushAlert = (alert) => {
-    setAlerts((alerts) => [
-      ...alerts,
-      {
-        id: alerts.length,
-        ...alert,
-      },
-    ]);
+    if (
+      !process.env.NODE_ENV ||
+      process.env.NODE_ENV === "development" ||
+      ["warning", "danger"].includes(alert.type)
+    ) {
+      setAlerts((alerts) => [
+        ...alerts,
+        {
+          id: alerts.length,
+          ...alert,
+        },
+      ]);
+    }
   };
 
   const clearAlert = (alert) =>
