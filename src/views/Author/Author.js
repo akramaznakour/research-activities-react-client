@@ -19,8 +19,8 @@ import NoResultFound from "../components/NoResultFound";
 import Loader from "../components/Loader";
 import LoadingResult from "../components/LoadingResult";
 
-const Author = () => {
-  const { scholarId } = useParams();
+const Author = (props) => {
+  const { authorId } = useParams();
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +60,7 @@ const Author = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [scholarId]);
+  }, [authorId]);
 
   const getIfIsFollowing = useCallback(async () => {
     if (!author) return;
@@ -71,7 +71,7 @@ const Author = () => {
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir si l'auteur est suivi" });
     }
-  }, [scholarId]);
+  }, [authorId]);
 
   const findAllUsers = useCallback(async () => {
     try {
@@ -86,7 +86,7 @@ const Author = () => {
     async (user_id) => {
       try {
         const service = isFollowed
-          ? userService.unfollowUser(scholarId)
+          ? userService.unfollowUser(authorId)
           : userService.followUser({ ...author, user_id });
 
         setsSendingFollow(true);
@@ -98,7 +98,7 @@ const Author = () => {
         setsSendingFollow(false);
       }
     },
-    [scholarId]
+    [authorId, author]
   );
 
   useEffect(() => {

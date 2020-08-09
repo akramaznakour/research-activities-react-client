@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
 import '../../assets/css/orgChart.css'
+
 export default class extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +13,8 @@ export default class extends Component {
   }
 
   componentDidMount() {
-    OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="180" y="35" text-anchor="middle">{val}</text>';
+    OrgChart.templates.diva.field_1 = '<text  style="font-size: 14px;"  x="102" y="144" text-anchor="middle">{val}</text>';
+    OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="70" y="35" >{val}</text>';
     OrgChart.templates.group.link = '<path stroke-linejoin="round" stroke="#aeaeae" stroke-width="1px" fill="none" d="M{xa},{ya} {xb},{yb} {xc},{yc} L{xd},{yd}" />';
     OrgChart.templates.group.min = Object.assign({}, OrgChart.templates.group);
     OrgChart.templates.group.min.imgs = "{val}";
@@ -21,9 +23,9 @@ export default class extends Component {
     OrgChart.templates.diva.minus = "";
     
     this.chart = new OrgChart(this.divRef.current, {
+layout: OrgChart.tree,
       nodes: this.props.nodes,
-      scaleInitial: 0.75,
-      nodeMouseClick: OrgChart.action.expandCollapse,
+      scaleInitial: OrgChart.match.boundary,      nodeMouseClick: OrgChart.action.expandCollapse,
       template: "diva",
       enableSearch: false,
       mouseScrool: OrgChart.action.none,
@@ -58,7 +60,7 @@ export default class extends Component {
         },
         "members-group": {
           subTreeConfig: {
-            columns: 2,
+            columns: 3,
           },
         },
       },
