@@ -51,13 +51,13 @@ const FollowedResearchers = () => {
 
   useEffect(() => {
     updateFilteringOptionsData();
-  }, [updateFilteringOptionsData]);
+  }, []);
 
   useEffect(() => {
     if (!filter) return;
     if (!isSearchActive) setIsSearchActive(true);
     updateFollowedUsersData();
-  }, [filter, isSearchActive, updateFollowedUsersData]);
+  }, [filter]);
 
   useEffect(() => {
     if (searchTerm === "") {
