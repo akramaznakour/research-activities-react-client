@@ -5,11 +5,10 @@ const makeAuthentificationService = (api) => ({
 
 const makeScraperService = (api) => ({
   authorSearch: (authorName) => api.get(`/author-search/${authorName}`),
-  getAuthorData: (scholarId) => api.get(`/author/${scholarId}`),
-  getPublicationData: (scholarId, publicationName) =>
-    api.get(`/publication/${scholarId}/${publicationName}`),
-  getPublicationDetails: (scholarId, publicationName) =>
-    api.get(`/publication-details/${scholarId}/${publicationName}`),
+  getAuthorData: (platform, authorId) =>
+    api.get(`/author/${platform}/${authorId}`),
+  getPublicationData: (authorId, publicationName) =>
+    api.get(`/publication/${authorId}/${publicationName}`),
 });
 
 const makeUserService = (api) => ({
