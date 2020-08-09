@@ -2,7 +2,6 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import Loader from "../../components/Loader";
-import PageNotFound from "../../components/PageNotFound";
 
 const Publication = ({ author, publication, updatePublication, index }) => {
   const { ApiServices, alertService } = useContext(AppContext);
@@ -17,10 +16,10 @@ const Publication = ({ author, publication, updatePublication, index }) => {
     try {
       setIsLoading(true);
       const response = await scraperService.getPublicationData(
-        author.scholarId,
-        publication.title
+        author.authorId,
+        publication.title.replace("/", "@").split("@")[0]
       );
-      if (response.data.error) {
+      if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
           ...publication,

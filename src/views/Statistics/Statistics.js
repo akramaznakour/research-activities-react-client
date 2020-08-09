@@ -8,6 +8,7 @@ import StatisticsFilter from "./components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
+import NoResultFound from "../components/NoResultFound";
 
 const ResearchersStatistics = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
@@ -163,6 +164,9 @@ const ResearchersStatistics = () => {
                       show: true,
                     }}
                   />
+                )}
+                {filteredResearchersStatistics.length === 0 && (
+                  <NoResultFound query={searchTerm} />
                 )}
               </div>
             </div>

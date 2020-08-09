@@ -25,8 +25,8 @@ const makeUserService = (api) => ({
   getResearchers: () => api.get(`/researchers`),
   followUser: (user) => api.post(`/follow`, user),
   updateFollowUser: (user) => api.post(`/update-followed-user`, user),
-  unfollowUser: (scholarId) => api.get(`/unfollow/${scholarId}`),
-  isFollowing: (scholarId) => api.get(`/is-following/${scholarId}`),
+  unfollowUser: (authorId) => api.get(`/unfollow/${authorId}`),
+  isFollowing: (authorId) => api.get(`/is-following/${authorId}`),
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
@@ -86,13 +86,13 @@ const makeNotificationsService = (api) => ({
   notifyFolloweers: ({
     publication,
     followedUserId,
-    scholarId,
+    authorId,
     currentPublications,
   }) =>
     api.post(`/notify-followers`, {
       publication,
       followed_user_id: followedUserId,
-      scholar_id: scholarId,
+      scholar_id: authorId,
       current_publications: currentPublications,
     }),
   markNotificationAsRead: (notificationId) =>
