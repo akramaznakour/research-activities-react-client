@@ -49,7 +49,7 @@ const Author = (props) => {
       if (isError) setIsError(false);
       if (noResultFound) setNoResultFound(false);
 
-      const response = await scraperService.getAuthorData(scholarId);
+      const response = await scraperService.getAuthorData(authorId);
       if (response.data.error) throw Error(response);
       if (response.status === 200) setAuthor(response.data);
       if (!response.data.publications) throw Error(response);
