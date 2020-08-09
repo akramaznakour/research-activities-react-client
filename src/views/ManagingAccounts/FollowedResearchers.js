@@ -5,6 +5,7 @@ import { AppContext } from "../../context/AppContext";
 import ResearcherCard from "../ManagingAccounts/components/ResearcherCard";
 import ResearchersFilter from "../components/ResearchersFilter";
 import PageHeader from "../components/PageHeader";
+import NoResultFound from "../components/NoResultFound";
 
 const FollowedResearchers = () => {
   const [followedResearchers, setFollowedResearchers] = useState([]);
@@ -99,14 +100,7 @@ const FollowedResearchers = () => {
             ))}
 
             {filteredFollowedResearchers.length === 0 && (
-              <div className="text-muted container text-center">
-                <p className="h4 text-muted font-weight-normal m-2 m-5">
-                  aucun résultat ne correspond au filtre cournat
-                </p>{" "}
-                <p className="h4 text-muted font-weight-normal m-1">
-                  veuillez essayer un autre filtre
-                </p>
-              </div>
+              <NoResultFound query={searchTerm} />
             )}
           </div>
         </div>
