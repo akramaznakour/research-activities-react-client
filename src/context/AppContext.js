@@ -31,7 +31,7 @@ function AppProvider({ children }) {
     if (
       !process.env.NODE_ENV ||
       process.env.NODE_ENV === "development" ||
-      alert.type === "success"
+      ["warning", "danger"].includes(alert.type)
     ) {
       setAlerts((alerts) => [
         ...alerts,
