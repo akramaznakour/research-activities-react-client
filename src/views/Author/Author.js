@@ -16,8 +16,8 @@ import Publications from "./components/Publications";
 
 import { AppContext } from "../../context/AppContext";
 import NoResultFound from "../components/NoResultFound";
-import Loader from "../components/Loader";
 import LoadingResult from "../components/LoadingResult";
+import ErrorFound from "../components/ErrorFound";
 
 const Author = (props) => {
   const { authorId } = useParams();
@@ -55,18 +55,16 @@ const Author = (props) => {
       if (!response.data.publications) throw Error(response);
     } catch (error) {
       setIsError(true);
-      setNoResultFound(true);
-      pushAlert({ message: "Incapable d'obtenir les données de l'auteur" });
     } finally {
       setIsLoading(false);
     }
   }, [authorId]);
 
   const getIfIsFollowing = useCallback(async () => {
-    if (!author) return;
     try {
-      const response = await userService.isFollowing(scholarId);
+      const response = await userService.isFollowing(authorId);
       if (response.data.isFollowing) setIsFollowed(true);
+
       throw Error();
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir si l'auteur est suivi" });
@@ -112,7 +110,8 @@ const Author = (props) => {
   return (
     <div className="row">
       {isLoading && <LoadingResult />}
-      {noResultFound && <NoResultFound query={scholarId} />}
+      {noResultFound && <NoResultFound query={authorId} />}
+      {isError && <ErrorFound />}
       {author && (
         <Fragment>
           <div className="col-lg-8">
