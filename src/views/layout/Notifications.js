@@ -114,7 +114,7 @@ const Notifications = () => {
     followedUsers.forEach((followedUser, index) => {
       setTimeout(async () => {
         checkFollowedResearcher(followedUser, index);
-      }, 1000 * index);
+      }, 10000 * index);
     });
   }, [checkFollowedResearcher, followedUsers]);
 
