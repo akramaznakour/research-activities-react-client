@@ -33,10 +33,9 @@ const AuthorSearch = () => {
     try {
       setIsLoading(true);
       const response = await scraperService.authorSearch(authorNamePath);
-      if (response.status !== 200) throw Error();
-      if (response.data.length > 0 && !response.data.error)
-        setAuthors(response.data);
-      else setNoResultFound(true);
+      if (response.data.authors) setAuthors(response.data.authors);
+      else if (response.data.error) setNoResultFound(true);
+      else throw Error();
     } catch (error) {
       pushAlert({ message: "Incapable de rechercher" });
       setIsError(true);

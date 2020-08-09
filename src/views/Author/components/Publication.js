@@ -30,8 +30,8 @@ const Publication = ({ author, publication, updatePublication, index }) => {
         setIsFetched(true);
         updatePublication(index, {
           ...publication,
-          IF: response.data["Impact Factor"],
-          SJR: response.data["SJR"],
+          IF: response.data.publication["Impact Factor"],
+          SJR: response.data.publication["SJR"],
           searchedFor: true,
         });
       }
