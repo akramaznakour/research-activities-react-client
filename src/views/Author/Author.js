@@ -7,7 +7,7 @@ import React, {
   Fragment,
 } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams ,useLocation} from "react-router-dom";
 
 import AuthorHeader from "./components/AuthorHeader";
 import Coauthors from "./components/Coauthors";
