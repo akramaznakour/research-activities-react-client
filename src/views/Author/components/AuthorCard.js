@@ -34,7 +34,7 @@ const ScopusCard = ({ author }) => (
       <small className="d-block text-muted text-truncate mt-n1">
         {[author.affiliation, author.city, author.territory]
           .join("@")
-          .substr(35)
+          .substr(30)
           .trim()
           .split("@")
           .filter((info) => info.length > 2)
@@ -70,7 +70,7 @@ const ScholarCard = ({ author }) => (
       <small className="d-block text-muted text-truncate mt-n1">
         {author.interests
           .join("@")
-          .substr(0,35)
+          .substr(0,30)
           .trim()
           .split("@")
           .filter((interest) => interest.length > 2)
