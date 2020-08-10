@@ -6,6 +6,8 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import { useHistory } from "react-router-dom";
+
 import { NotificationIcon } from "../components/icons";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
@@ -60,13 +62,15 @@ const Notifications = () => {
   const checkFollowedResearcher = useCallback(
     async (user, index) => {
       try {
-        const response = await scraperService.getAuthorData(user.scholarId);
-        const currentPublications = response.data.publications;
+        const response = await scraperService.getAuthorData(
+          "scholar",
+          user.authorId
+        );
+        const currentPublications = response.data.author.publications;
         console.log("user:", user.lastName);
         console.log("currentPublications.length", currentPublications.length);
         console.log("user.publications.length", user.publications.length);
         if (currentPublications.length > user.publications.length) {
-          // fin publication
           console.log("notifyFolloweers");
           const oldPublicationsShortTitles = user.publications.map(
             ({ title }) => title.substr(0, 40)
@@ -82,7 +86,7 @@ const Notifications = () => {
             newPublications.map(
               async ({ title }) =>
                 await notificationsService.notifyFolloweers({
-                  scholarId: user.scholarId,
+                  authorId: user.authorId,
                   publication: title,
                   followedUserId: user.user_id,
                   currentPublications,
@@ -110,7 +114,7 @@ const Notifications = () => {
     followedUsers.forEach((followedUser, index) => {
       setTimeout(async () => {
         checkFollowedResearcher(followedUser, index);
-      }, 1000 * index);
+      }, 10000 * index);
     });
   }, [checkFollowedResearcher, followedUsers]);
 
@@ -184,31 +188,48 @@ const Notifications = () => {
 };
 export default Notifications;
 
-const Notification = ({ notification, markAsRead }) => (
-  <div
-    className="toast show"
-    role="alert"
-    aria-live="assertive"
-    aria-atomic="true"
-    data-autohide="false"
-    data-toggle="toast"
-  >
-    <Link to={"/author/" + notification.scholarId} onClick={() => markAsRead()}>
-      <div className="toast-header">
-        {notification.profilePicture && (
-          <span
-            className="avatar avatar-sm mr-2"
-            style={{
-              backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
-            }}
-          ></span>
-        )}
+const Notification = ({ notification, markAsRead }) => {
+  const history = useHistory();
 
-        <strong className="mr-auto">{notification.fullName}</strong>
-      </div>
-      <div className="toast-body">
-        {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
-      </div>
-    </Link>
-  </div>
-);
+  const { alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
+  return (
+    <div
+      className="toast show"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      data-autohide="false"
+      data-toggle="toast"
+    >
+      <Link
+        onClick={(e) => {
+          e.preventDefault();
+          history.push("/author/" + notification.authorId);
+          pushAlert({
+            type: "info",
+            autoClose: false,
+            message: "Nouvelle publication : " + notification.publication,
+          });
+          markAsRead();
+        }}
+      >
+        <div className="toast-header">
+          {notification.profilePicture && (
+            <span
+              className="avatar avatar-sm mr-2"
+              style={{
+                backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
+              }}
+            ></span>
+          )}
+
+          <strong className="mr-auto">{notification.fullName}</strong>
+        </div>
+        <div className="toast-body">
+          {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
+        </div>
+      </Link>
+    </div>
+  );
+};

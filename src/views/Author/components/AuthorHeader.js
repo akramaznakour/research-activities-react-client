@@ -4,6 +4,7 @@ import { CrossIcon, ConfirmationIcon } from "../../components/icons";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AuthorReport from "../AuthorReport";
 const AuthorHeader = ({
+  platform,
   toggleFollow,
   isFollowed,
   isSendingFollow,
@@ -33,17 +34,22 @@ const AuthorHeader = ({
                   />
                 )}
 
-                <PDFDownloadLink
-                  className="btn  btn-sm m-1  btn-outline-primary"
-                  document={<AuthorReport author={author} />}
-                  fileName={author.name + ".pdf"}
-                >
-                  {({ blob, url, loading, error }) =>
-                    loading
-                      ? "Chargement du document..."
-                      : "Imprimer le rapport"
-                  }
-                </PDFDownloadLink>
+                {platform !== "scopus" && (
+                  <Fragment>
+                    <PDFDownloadLink
+                      className="btn  btn-sm m-1  btn-outline-primary"
+                      document={<AuthorReport author={author} />}
+                      fileName={author.name + ".pdf"}
+                    >
+                      {({ blob, url, loading, error }) =>
+                        loading
+                          ? "Chargement du document..."
+                          : "Imprimer le rapport"
+                      }
+                    </PDFDownloadLink>
+                  </Fragment>
+                )}
+
                 <div className="text-info small">
                   {`Nous avons réussi à récupérer le SJR et IF de ${
                     author.publications.filter((p) => p.IF || p.SJR).length

@@ -18,6 +18,8 @@ import Laboratory from "../views/ManagingEntities/Laboratory";
 import PhdPage from "../views/ManagingEntities/PhdPage";
 
 import LabTree from "../views/ManagingEntities/LabTree";
+import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
+import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
 
 
 import {
@@ -28,6 +30,8 @@ import {
   SettingsIcon,
   PhdIcon,
 } from "../views/components/icons";
+import TeamsStatistics from "../views/Statistics/TeamsStatistics";
+import LabStatistics from "../views/Statistics/labStatistics";
 
 
 const allRoles = [
@@ -95,9 +99,33 @@ const entitiesPathsCategory = {
   ],
 };
 
+const researchDirectorPaths = {
+  title: "Direction de recherche",
+  isDropdown: true,
+  icon: SettingsIcon,
+  routes: [
+    {
+      title: "Laboratoires",
+      path: "/laboratories-of-director",
+      component: LaboratoriesOfDirector,
+      roles: ["RESEARCH_DIRECTOR"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques",
+      path: "/statistics",
+      component: Statistics,
+      icon: StatisticsIcon,
+      roles: ["RESEARCH_DIRECTOR"],
+      inMenu: true,
+    }
+  ]
+};
+
 const accountsManagementPathsCategory = {
   title: "Gestion des comptes",
-  isDropdown: false,
+  isDropdown: true,
+  icon: SettingsIcon,
   routes: [
     {
       title: "Comptes chefs des Laboratoires",
@@ -115,12 +143,20 @@ const accountsManagementPathsCategory = {
       icon: TeamIcon,
       inMenu: true,
     },
+    {
+      title: "Compte Directeur de recherche",
+      path: "/research-director",
+      component: ResearchDirector,
+      roles: ["CED_HEAD"],
+      icon: TeamIcon,
+      inMenu: true,
+    }
   ],
 };
 
 const StatisticsPaths = {
   title: "Statistiques",
-  isDropdown: false,
+  isDropdown: true,
   icon: StatisticsIcon,
   routes: [
     {
@@ -128,11 +164,31 @@ const StatisticsPaths = {
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
-      roles: ["LABORATORY_HEAD", "TEAM_HEAD"],
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques d'équipes",
+      path: "/teamStatistics",
+      component: TeamsStatistics,
+      icon: StatisticsIcon,
+      roles: ["LABORATORY_HEAD"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques des laboratoires",
+      path: "/labStatistics",
+      component: LabStatistics,
+      icon: StatisticsIcon,
+      roles: ["CED_HEAD","CED_HEAD"],
       inMenu: true,
     },
   ],
 };
+
+
+    
+
 
 const followedResearchersPaths = {
   title: "Chercheur suivis",
@@ -199,7 +255,7 @@ const authorPathsCategory = {
   routes: [
     {
       title: "Auteur",
-      path: "/author/:scholarId",
+      path: "/author/:platform/:authorId",
       component: Author,
       inMenu: false,
       roles: allRoles,
@@ -234,9 +290,11 @@ const menus = [
   entitiesPathsCategory,
   accountsManagementPathsCategory,
   followedResearchersPaths,
+  researchDirectorPaths,
   phdStudentsPaths,
   StatisticsPaths,
   errorPathsCategory,
+  
 ];
 
 const routes = [
@@ -245,6 +303,7 @@ const routes = [
   ...entitiesPathsCategory.routes,
   ...accountsManagementPathsCategory.routes,
   ...followedResearchersPaths.routes,
+  ...researchDirectorPaths.routes,
   ...phdStudentsPaths.routes,
   ...StatisticsPaths.routes,
   ...errorPathsCategory.routes,

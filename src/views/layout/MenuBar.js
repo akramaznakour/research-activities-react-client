@@ -7,7 +7,10 @@ import { AppContext } from "../../context/AppContext";
 const MenuBar = withRouter(({ history, location, ...props }) => {
   const { user } = useContext(AppContext);
 
-  const menus = getMenuForRole(user.role);
+  let menus = getMenuForRole(user.role);
+  if(user.isDirector)
+    menus = [...menus, ...getMenuForRole("RESEARCH_DIRECTOR")];
+ 
 
   return (
     <nav

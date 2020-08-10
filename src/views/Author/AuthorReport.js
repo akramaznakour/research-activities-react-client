@@ -67,8 +67,7 @@ const AuthorReport = ({ author }) => {
 
   useEffect(() => {
     console.log("should update");
-    
-  }, [author])
+  }, [author]);
 
   return (
     <Document
@@ -135,15 +134,21 @@ const AuthorReport = ({ author }) => {
             <View key={index} style={styles.tableRow}>
               <View style={{ ...styles.tableCol, width: "80%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
-                <Text style={{ ...styles.tableCell, color: "gray" }}>
-                  {publication.authors.join(", ")}
-                </Text>
+                {publication.authors && (
+                  <Text style={{ ...styles.tableCell, color: "gray" }}>
+                    {publication.authors.join(", ")}
+                  </Text>
+                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                <Text style={styles.tableCell}>{publication.year} </Text>
+                {publication.year && (
+                  <Text style={styles.tableCell}>{publication.year} </Text>
+                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                <Text style={styles.tableCell}>{publication.citation}</Text>
+              {publication.citation && (
+                  <Text style={styles.tableCell}>{publication.citation} </Text>
+                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.SJR ?? ""}</Text>

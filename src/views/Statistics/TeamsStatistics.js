@@ -1,17 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import ResearchersFilter from "../components/ResearchersFilter";
+import TeamFilter from "../components/TeamFilter";
 import PageHeader from "../components/PageHeader";
-import StatisticsTable from "./components/StatisticsTable";
 import { AppContext } from "../../context/AppContext";
 import StatisticsFilter from "./components/StatisticsFilter";
 
 import C3Chart from "react-c3js";
 import "c3/c3.css";
-import NoResultFound from "../components/NoResultFound";
+import LabFilter from "../components/LabFilter";
 
-const ResearchersStatistics = () => {
+const TeamsStatistics = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
+  const [teamsStatistics, setTeamsStatistics] = useState([]);
+
   const [
     filteredResearchersStatistics,
     setFilteredResearchersStatistics,
@@ -28,8 +29,7 @@ const ResearchersStatistics = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { user, ApiServices, alertService } = useContext(AppContext);
-  const { pushAlert } = alertService;
+  const { user, ApiServices } = useContext(AppContext);
   const { statisticsService, userService } = ApiServices;
 
   const [chartVersion, setChartVersion] = useState(0);
@@ -44,24 +44,52 @@ const ResearchersStatistics = () => {
 
   const updateChart = useCallback(() => {
     let yearsRange = [];
-    for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
-
-    const columns = filteredResearchersStatistics
+    let teamStats= {};
+    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+    filteredResearchersStatistics
       .map((usersStatistic) =>
-        [usersStatistic.name].concat(
-          yearsRange.map((year) => usersStatistic.yearlyPublications[year] ?? 0)
-        )
+      
+       {
+         yearsRange.map((year)=>{
+
+          teamStats[year]=teamStats[year]+(usersStatistic.yearlyPublications[year] ?? 0)
+         })
+         
+       }
+         
+        
+      );
+      console.log(teamStats);
+      if(filter != null){
+         setTeamsStatistics( teamsStatistics=> teamsStatistics.concat({
+           'team': filter.team_abbreviation,
+           'publications': teamStats
+         })
+          );
+
+         console.log(filter.team_abbreviation);
+         console.log(teamsStatistics);
+      }
+      const columns = teamsStatistics
+      .map((teamStatistics) =>
+      
+        [teamStatistics.team].concat(
+          yearsRange.map((year) =>  teamStatistics.publications[year] ?? 0)
+        ) 
       )
+      
       .concat([["x"].concat(yearsRange)]);
-
+    
     setChart(() => ({
-      data: {
-        x: "x",
-        type: "bar",
+     
+      data:{
+      x: "x",
         columns,
-      },
-    }));
-
+        type: 'line',
+        
+      
+    }}));
+    console.log(columns);
     setChartVersion(chartVersion + 1);
   }, [
     chartVersion,
@@ -76,9 +104,7 @@ const ResearchersStatistics = () => {
       if (response.data) setFilteringOptions(response.data);
       else throw Error();
     } catch (error) {
-      pushAlert({
-        message: "Incapable de mettre à jour les options de filtrage",
-      });
+      
     }
   }, [user._id]);
 
@@ -88,9 +114,7 @@ const ResearchersStatistics = () => {
       if (response.data) setResearchersStatistics(response.data);
       else throw Error();
     } catch (error) {
-      pushAlert({
-        message: "Incapable de mettre à jour obtenir les statistiques",
-      });
+ 
     }
   }, [filter]);
 
@@ -120,6 +144,7 @@ const ResearchersStatistics = () => {
     setFilteredResearchersStatistics(a);
   }, [searchTerm, researchersStatistics]);
 
+  
   return (
     <div className="container">
       <PageHeader
@@ -133,7 +158,7 @@ const ResearchersStatistics = () => {
             setDateRange={setDateRange}
             updateStatistics={updateStatistics}
           />
-          <ResearchersFilter
+          <TeamFilter
             {...{
               filter,
               setFilter,
@@ -165,22 +190,12 @@ const ResearchersStatistics = () => {
                     }}
                   />
                 )}
-                {filteredResearchersStatistics.length === 0 && (
-                  <NoResultFound query={searchTerm} />
-                )}
               </div>
             </div>
-            <div className="table-responsive">
-              {filteredResearchersStatistics.length > 0 && (
-                <StatisticsTable
-                  usersStatistics={filteredResearchersStatistics}
-                  dateRange={dateRange}
-                />
-              )}
-            </div>
+            
             <div className="resize-triggers">
               <div className="expand-trigger">
-                <div style={{ width: "579px", height: "460px" }}></div>
+                <div style={{ width: "579px", height: "0px" }}></div>
               </div>
               <div className="contract-trigger"></div>
             </div>
@@ -191,4 +206,4 @@ const ResearchersStatistics = () => {
   );
 };
 
-export default ResearchersStatistics;
+export default TeamsStatistics;
