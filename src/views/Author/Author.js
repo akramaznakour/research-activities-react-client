@@ -7,7 +7,7 @@ import React, {
   Fragment,
 } from "react";
 
-import { useParams ,useLocation} from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import AuthorHeader from "./components/AuthorHeader";
 import Coauthors from "./components/Coauthors";
@@ -20,7 +20,7 @@ import LoadingResult from "../components/LoadingResult";
 import ErrorFound from "../components/ErrorFound";
 
 const Author = (props) => {
-  const { authorId } = useParams();
+  const { platform, authorId } = useParams();
   const [author, setAuthor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,20 +31,19 @@ const Author = (props) => {
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { scraperService, userService } = ApiServices;
- 
+
   const getAuthorData = useCallback(async () => {
     try {
       setAuthor();
       setIsLoading(true);
       if (isError) setIsError(false);
       if (noResultFound) setNoResultFound(false);
-      const response = await scraperService.getAuthorData("scholar", authorId);
+      const response = await scraperService.getAuthorData(platform, authorId);
       if (response.data.author) setAuthor(response.data.author);
       else if (response.data.error) setNoResultFound(true);
       else {
         pushAlert({ message: "Incapable d'obtenir les données de l'auteur" });
       }
-
     } catch (error) {
       setIsError(true);
     } finally {
@@ -94,6 +93,7 @@ const Author = (props) => {
   useEffect(() => {
     getAuthorData();
     if (user.role === "LABORATORY_HEAD") {
+      if (platform === "scopus") return;
       getIfIsFollowing();
       findAllUsers();
     }
@@ -108,6 +108,7 @@ const Author = (props) => {
         <Fragment>
           <div className="col-lg-8">
             <AuthorHeader
+              platform={platform}
               users={users}
               user={user}
               author={author}
@@ -115,7 +116,11 @@ const Author = (props) => {
               isFollowed={isFollowed}
               isSendingFollow={isSendingFollow}
             />
-            <Publications author={author} setAuthor={setAuthor} />
+            <Publications
+              platform={platform}
+              author={author}
+              setAuthor={setAuthor}
+            />
           </div>
           <div className="col-lg-4">
             <AuthorCitations author={author} />

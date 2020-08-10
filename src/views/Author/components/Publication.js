@@ -3,7 +3,13 @@ import React, { useState, useContext, useEffect, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import Loader from "../../components/Loader";
 
-const Publication = ({ author, publication, updatePublication, index }) => {
+const Publication = ({
+  author,
+  publication,
+  updatePublication,
+  index,
+  platform,
+}) => {
   const { ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { scraperService } = ApiServices;
@@ -46,6 +52,7 @@ const Publication = ({ author, publication, updatePublication, index }) => {
   }, []);
 
   useEffect(() => {
+    if (platform === "scopus") return;
     let isMounted = true;
     if (!publication.IF && !publication.SJR && !publication.searchedFor)
       setTimeout(() => {
@@ -69,9 +76,12 @@ const Publication = ({ author, publication, updatePublication, index }) => {
     <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
       <td>
         {publication.title}
-        <small className="d-block text-muted text-truncate mt-n1">
-          {publication.authors.join(", ")}
-        </small>
+        {publication.authors && (
+          <small className="d-block text-muted text-truncate mt-n1">
+            {publication.authors.join(", ")}
+          </small>
+        )}
+
         {publication.extraInformation &&
           publication.extraInformation["Conference"] && (
             <small className="d-block text-muted text-truncate mt-n1">
@@ -85,8 +95,10 @@ const Publication = ({ author, publication, updatePublication, index }) => {
             </small>
           )}
       </td>
-      <td className="text-center">{publication.year}</td>
-      <td className="text-center">{publication.citation.replace("*", "")}</td>
+      <td className="text-center">{publication.year ?? ""}</td>
+      <td className="text-center">
+        {publication.citation ? publication.citation.replace("*", "") : ""}
+      </td>
       <td className="text-center">
         {publication.IF ?? " "}
         {isLoading && <Loader size="25" />}

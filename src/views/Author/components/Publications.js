@@ -3,7 +3,7 @@ import Publication from "./Publication";
 import $ from "jquery";
 import "datatables";
 
-const Publications = ({ author, setAuthor }) => {
+  const Publications = ({ author, setAuthor ,platform}) => {
   useEffect(() => {
     $(".datatable").DataTable();
   }, []);
@@ -38,6 +38,7 @@ const Publications = ({ author, setAuthor }) => {
               author.publications.map((publication, index) => (
                 <Publication
                   index={index}
+                  platform={platform}
                   key={publication.title}
                   publication={publication}
                   updatePublication={updatePublication}
