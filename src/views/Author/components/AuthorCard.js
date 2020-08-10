@@ -24,7 +24,7 @@ const ScopusCard = ({ author }) => (
     <div className="col" style={{ minWidth: "auto" }}>
       <Link
         className="text-body d-block pb-2"
-        to={"/author/" + author.authorId}
+        to={"/author/" + author.platform+"/"+ author.authorId}
       >
         {author.name ? author.name.substr(0,25) : ""}
         <span className={"badge pull-right ml-2 bg-orange"}>
@@ -61,7 +61,7 @@ const ScholarCard = ({ author }) => (
     <div className="col" style={{ minWidth: "auto" }}>
       <Link
         className="text-body d-block pb-2"
-        to={"/author/" + author.authorId}
+        to={"/author/" + author.platform+"/"+ author.authorId}
       >
         {author.name ? author.name.substr(0,25) : ""}
         <span className="badge pull-right ml-2 bg-blue">{author.platform}</span>
