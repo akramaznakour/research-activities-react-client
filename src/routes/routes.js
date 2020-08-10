@@ -15,6 +15,8 @@ import Statistics from "../views/Statistics/Statistics";
 import Profile from "../views/Profile/Profile";
 import Team from "../views/ManagingEntities/Team";
 import Laboratory from "../views/ManagingEntities/Laboratory";
+import PhdPage from "../views/ManagingEntities/PhdPage";
+
 import LabTree from "../views/ManagingEntities/LabTree";
 
 
@@ -24,6 +26,7 @@ import {
   UserCheckIcon,
   TeamIcon,
   SettingsIcon,
+  PhdIcon,
 } from "../views/components/icons";
 
 
@@ -145,6 +148,21 @@ const followedResearchersPaths = {
     },
   ],
 };
+const phdStudentsPaths = {
+  title: "Doctorants",
+  isDropdown: false,
+  routes: [
+    {
+      title: "Doctorants",
+      path: "/phd",
+      component: PhdPage,
+      icon: PhdIcon,
+      roles: allRoles,
+      inMenu: true,
+    },
+  ],
+};
+
 const communPathsCategory = {
   isDropdown: false,
   routes: [
@@ -156,6 +174,8 @@ const communPathsCategory = {
       inMenu: true,
       roles: allRoles,
     },
+    
+
     {
       title: "Profile",
       path: "/Profile/:id",
@@ -214,6 +234,7 @@ const menus = [
   entitiesPathsCategory,
   accountsManagementPathsCategory,
   followedResearchersPaths,
+  phdStudentsPaths,
   StatisticsPaths,
   errorPathsCategory,
 ];
@@ -224,6 +245,7 @@ const routes = [
   ...entitiesPathsCategory.routes,
   ...accountsManagementPathsCategory.routes,
   ...followedResearchersPaths.routes,
+  ...phdStudentsPaths.routes,
   ...StatisticsPaths.routes,
   ...errorPathsCategory.routes,
 ];

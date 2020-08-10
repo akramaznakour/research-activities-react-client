@@ -52,6 +52,8 @@ const LabTree = () => {
 
           for (const member of team.teamMemberShip) {
             let res = await userService.findUser(member.user_id);
+            console.log("RES,",res);
+
             let name = [res.data.firstName, res.data.lastName].join(" ");
             if (member.user_id !== team.head_id && typeof team.head_id !== "undefined") {
               nodes.push({ id: member.user_id, stpid: team._id, pid: team.head_id, name: name, img: "https://cdn.balkan.app/shared/empty-img-white.svg" });
@@ -81,6 +83,7 @@ const LabTree = () => {
       <div className="page-header">
         <PageHeader title={`Organigramme de laboratoire ${UserHelper.userHeadedLaboratories(user)}`} />
       </div>
+      <button id="epdf" >Export PDF</button>
       <div style={{ height: "100%" }}>{!isLoading ? <OrgChart nodes={nodes} /> : "L'organigramme se charge ..."}</div>
     </Fragment>
   );

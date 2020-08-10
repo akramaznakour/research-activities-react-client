@@ -36,6 +36,23 @@ const SettingsIcon = () => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 );
+const PhdIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="icon  letter-case"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+    stroke="currentColor"
+    fill="none"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+  <path d="M6 2 L6 30 26 30 26 10 18 2 Z M18 2 L18 10 26 10" />
+    <path d="M16 11l2 2l4 -4" />
+  </svg>
+);
 
 const LoopIcon = () => (
   <svg
@@ -326,4 +343,5 @@ export {
   EditingIcon,
   AlertIcon,
   SuccessIcon,
+  PhdIcon,
 };

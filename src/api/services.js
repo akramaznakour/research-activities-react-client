@@ -32,6 +32,17 @@ const makeUserService = (api) => ({
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
 });
+// const makePhdService = (api) => ({
+//   createUser: (user) => api.post(`/users`, user),
+//   updateUser: (user) => api.put(`/users`, user),
+//   findUser: (_id) => api.get(`/users/${_id}`),
+//   findAllUsers: () => api.get(`/users`),
+//   deleteUser: (_id) => api.delete(`/users/${_id}`),
+ 
+ 
+  
+  
+// });
 
 const makeUniversityService = (api) => ({
   createUniversity: (university) => api.post(`/universities`, university),

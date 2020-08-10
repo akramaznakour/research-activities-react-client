@@ -12,7 +12,15 @@ export default class extends Component {
     return false;
   }
 
+   pdf(nodeId) {
+    // this.chart.exportPDF({
+    //     format: "A4",
+    //     header: 'My Header',
+    //     footer: 'My Footer. Page {current-page} of {total-pages}'
+    // });
+}
   componentDidMount() {
+    
     OrgChart.templates.diva.field_1 = '<text  style="font-size: 14px;"  x="102" y="144" text-anchor="middle">{val}</text>';
     OrgChart.templates.group.field_0 = '<text  style="font-size: 24px;"  x="70" y="35" >{val}</text>';
     OrgChart.templates.group.link = '<path stroke-linejoin="round" stroke="#aeaeae" stroke-width="1px" fill="none" d="M{xa},{ya} {xb},{yb} {xc},{yc} L{xd},{yd}" />';
@@ -50,10 +58,19 @@ layout: OrgChart.tree,
         img_0: "img",
       },
       menu: {
-        pdf: { text: "Imprimer l'arborescence",
-        format: "A4",
-        expandChildren: true},
-      },
+        pdfWithTitle: {                
+            text: 'A4 PDF',
+            icon: OrgChart.icon.pdf(24, 24),
+            onClick: function () {
+                this.chart.exportPDF({
+                    header: 'my header goes here',
+                    footer: 'my footer goes here',
+                    format: 'A4',
+                    margin: [60, 20, 60, 20]
+                });
+            }
+        }
+    },
       tags: {
         group: {
           template: "group",
@@ -65,6 +82,9 @@ layout: OrgChart.tree,
         },
       },
     });
+    document.getElementById('epdf').addEventListener('click', function () {
+      this.chart.exportPDF({ filename: 'My.pdf' });
+  });
   }
 
   render() {
