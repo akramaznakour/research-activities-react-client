@@ -29,9 +29,8 @@ function AppProvider({ children }) {
 
   const pushAlert = (alert) => {
     if (
-      !process.env.NODE_ENV ||
-      process.env.NODE_ENV === "development" ||
-      ["warning", "danger"].includes(alert.type)
+      process.env.DEBUG === "true" ||
+      !["warning", "danger"].includes(alert.type)
     ) {
       setAlerts((alerts) => [
         ...alerts,
