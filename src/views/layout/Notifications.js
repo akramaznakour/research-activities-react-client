@@ -190,6 +190,9 @@ export default Notifications;
 
 const Notification = ({ notification, markAsRead }) => {
   const history = useHistory();
+
+  const { alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
   return (
     <div
       className="toast show"
@@ -202,8 +205,11 @@ const Notification = ({ notification, markAsRead }) => {
       <Link
         onClick={(e) => {
           e.preventDefault();
-          history.push("/author/" + notification.authorId, {
-            publication: notification.publication,
+          history.push("/author/" + notification.authorId);
+          pushAlert({
+            type: "info",
+            autoClose: false,
+            message: "Nouvelle publication : " + notification.publication,
           });
           markAsRead();
         }}
