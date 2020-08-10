@@ -213,7 +213,7 @@ const authorPathsCategory = {
   routes: [
     {
       title: "Auteur",
-      path: "/author/:authorId",
+      path: "/author/:platform/:authorId",
       component: Author,
       inMenu: false,
       roles: allRoles,
