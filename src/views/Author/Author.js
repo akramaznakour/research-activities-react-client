@@ -31,17 +31,7 @@ const Author = (props) => {
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { scraperService, userService } = ApiServices;
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state && location.state.publication)
-      pushAlert({
-        type: "info",
-        autoClose: false,
-        message: "Nouvelle publication : " + location.state.publication,
-      });
-  }, []);
-
+ 
   const getAuthorData = useCallback(async () => {
     try {
       setAuthor();
