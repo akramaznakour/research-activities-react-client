@@ -34,9 +34,16 @@ const Publication = ({
 
       console.log("jouranlName : ", jouranlName);
 
-      if (!jouranlName) return;
+      if (!jouranlName) {
+        updatePublication(index, {
+          ...publication,
+          searchedFor: true,
+        });
+        return;
+      }
+      const jouranlNameQuery = jouranlName.replace("/", "").replace("\\", "");
 
-      const response = await scraperService.getJournalData(jouranlName);
+      const response = await scraperService.getJournalData(jouranlNameQuery);
       if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
