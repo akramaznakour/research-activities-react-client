@@ -93,7 +93,6 @@ const Author = (props) => {
   useEffect(() => {
     getAuthorData();
     if (user.role === "LABORATORY_HEAD") {
-      if (platform === "scopus") return;
       getIfIsFollowing();
       findAllUsers();
     }
