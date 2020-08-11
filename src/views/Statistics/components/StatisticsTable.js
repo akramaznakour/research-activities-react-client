@@ -19,12 +19,23 @@ const StatisticsTable = ({ usersStatistics, dateRange }) => {
         {usersStatistics.map((userStatistics,indextr) => (
           <tr key={indextr} >
             <td className="w-1">
-              <span
-                className="avatar"
-                style={{
-                  backgroundImage: "url(" + userStatistics.profilePicture + ")",
-                }}
-              ></span>
+              {userStatistics.profilePicture && (
+                <span
+                  className="avatar avatar-sm"
+                  style={{
+                    backgroundImage:
+                      "url(" + userStatistics.profilePicture + ")",
+                  }}
+                ></span>
+              )}
+              {!userStatistics.profilePicture && (
+                <span className="avatar avatar-sm bg-blue-lt ">
+                  {userStatistics.name.split(" ")[0][0]}
+                  {userStatistics.name.split(" ")[1]
+                    ? userStatistics.name.split(" ")[1][0]
+                    : ""}
+                </span>
+              )}
             </td>
             <td className="">{userStatistics.name}</td>
             {yearsRange.map((year,index) => (
