@@ -27,9 +27,6 @@ const Publication = ({
         : publication.extraInformation &&
           publication.extraInformation["Journal"]
         ? publication.extraInformation["Journal"]
-        : publication.extraInformation &&
-          publication.extraInformation["Conference"]
-        ? publication.extraInformation["Conference"]
         : null;
 
       console.log("jouranlName : ", jouranlName);
