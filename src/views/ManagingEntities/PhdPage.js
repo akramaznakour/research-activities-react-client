@@ -1,191 +1,205 @@
-// /* eslint-disable react-hooks/exhaustive-deps */
-// import React, {
-//     Fragment,
-//     useEffect,
-//     useState,
-//     useContext,
-//     useCallback,
-//   } from "react";
-//   import { AppContext } from "../../context/AppContext";
-//   import CRUDTable from "../components/CRUDTable";
-//   import CRUDForm from "../components/CRUDForm";
-//   import PageHeader from "../components/PageHeader";
-//   import { useHistory } from "react-router-dom";
-  
-//   const PhdPage = () => {
-//     const history = useHistory();
-//     const { user, ApiServices, UserHelper, alertService } = useContext(
-//       AppContext
-//     );
-//     const { pushAlert } = alertService;
-//     const { phdService } = ApiServices;
-  
-//     const [phdStudents, setPhdStudents] = useState([]);
-    
-  
-//     const [inputs, setInputs] = useState({});
-//     const [action, setAction] = useState("ADDING");
-  
-//     const columns = ["Nom", "Abréviation", "laboratoire"];
-  
-//     const inputsSkeleton = [
-//       { name: "name", label: columns[0], type: "input" },
-//       { name: "abbreviation", label: columns[1], type: "input" },
-      
-//     ];
-  
-//     const clearInputs = () => {
-//       setInputs(() => ({
-//         name: "",
-//         abbreviation: "",
-//         laboratory_id: "",
-//       }));
-//     };
-  
-//     // const updateTeamData = useCallback(async () => {
-//     //   try {
-//     //     const response = await phdService.findAllTeams();
-//     //     if (response.data) {
-//     //       const filteredLaboratoiresIds = user.laboratoriesHeaded.map(
-//     //         ({ _id }) => _id
-//     //       );
-//     //       const filteredTeams = response.data
-//     //         .filter(
-//     //           (team) => filteredLaboratoiresIds.indexOf(team.laboratory_id) !== -1
-//     //         )
-//     //         .map((team) => ({
-//     //           ...team,
-//     //           laboratory: team.laboratory.name,
-//     //         }));
-//     //       setTeams(filteredTeams);
-//     //     } else throw Error();
-//     //   } catch (error) {
-//     //     pushAlert({
-//     //       message: "Incapable de mettre à jour les données de l'équipe",
-//     //     });
-//     //   }
-//     // }, [user.laboratoriesHeaded]);
-  
-//     // const updateLaboratoriesData = useCallback(() => {
-//     //   setLaboratories(user.laboratoriesHeaded);
-//     // }, [user.laboratoriesHeaded]);
-  
-//     // const editTeam = (team) => {
-//     //   setAction("EDITING");
-//     //   setInputs((inputs) => ({
-//     //     ...inputs,
-//     //     ...team,
-//     //   }));
-//     // };
-  
-//     const addTeam = async () => {
-//       try {
-//         const response = await phdService.createTeam(inputs);
-//         if (response.data) {
-//         //   updateTeamData();
-//           clearInputs();
-//         } else throw Error();
-//       } catch (error) {
-//         pushAlert({ message: "Incapable de créer l'équipe" });
-//       }
-//     };
-  
-//     const updateTeam = async (team) => {
-//       try {
-//         const response = await phdService.updateTeam({
-//           ...team,
-//           ...inputs,
-//         });
-//         if (response.data) {
-//           setAction("ADDING");
-//         //   updateTeamData();
-//           clearInputs();
-//         } else throw Error();
-//       } catch (error) {
-//         pushAlert({
-//           message: "Incapable de mettre à jour les données de l'équipe",
-//         });
-//       }
-//     };
-  
-//     // const deleteTeam = async (team) => {
-//     //   try {
-//     //     const response = await phdService.deleteTeam(team._id);
-//     //     if (response.data) updateTeamData();
-//     //     else throw Error();
-//     //   } catch (error) {
-//     //     pushAlert({ message: "Incapable de supprimer l'équipe" });
-//     //   }
-//     // };
-  
-//     const manageTeam = ({ _id }) => {
-//       history.push(`/team/${_id}`);
-//     };
-  
-//     // const handleSubmit = (event) => {
-//     //   event.preventDefault();
-  
-//     //   return action === "ADDING"
-//     //     ? addTeam()
-//     //     : action === "EDITING"
-//     //     ? updateTeam()
-//     //     : updateTeamData();
-//     // };
-  
-//     const cancelEdit = () => {
-//       clearInputs();
-//       setAction("ADDING");
-//     };
-  
-//     useEffect(() => {
-//     //   updateTeamData();
-//     //   updateLaboratoriesData();
-//       clearInputs();
-//     }, []);
-  
-//     return (
-//       <Fragment>
-//         <div className="page-header">
-//           <PageHeader
-//             title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(
-//               user
-//             )}`}
-//             subTitle={`${teams.length} équipe(s)`}
-//           />
-//         </div>
-//         <div className="row row-cards row-deck">
-//           <div className="col-md-8">
-//             <CRUDTable
-//               columns={columns}
-//               data={teams}
-//               tableSkeleton={inputsSkeleton}
-//               actions={[
-//                 { name: "Gérer", function: manageTeam, style: "primary" },
-//                 { name: "Modifier", function: editTeam, style: "primary" },
-//                 {
-//                   name: "Supprimer",
-//                   function: deleteTeam,
-//                   style: "danger",
-//                 },
-//               ]}
-//             />
-//           </div>
-//           <div className="col-md-4">
-//             <CRUDForm
-//               {...{
-//                 inputs,
-//                 setInputs,
-//                 inputsSkeleton,
-//                 handleSubmit,
-//                 cancelEdit,
-//                 action,
-//               }}
-//             />
-//           </div>
-//         </div>
-//       </Fragment>
-//     );
-//   };
-  
-//   export default PhdPage;
-  
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useEffect, useState, useContext, useCallback } from "react";
+import { AppContext } from "../../context/AppContext";
+import CRUDTable from "../components/CRUDTable";
+import CRUDForm from "../components/CRUDForm";
+import PageHeader from "../components/PageHeader";
+import { useHistory } from "react-router-dom";
+
+const PhdPage = () => {
+  const history = useHistory();
+  const { user, ApiServices, UserHelper, alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
+  const { phdStudentService } = ApiServices;
+  const [phdStudents, setPhdStudents] = useState([]);
+  const [supervisors, setSupervisors] = useState([]);
+
+  const [inputs, setInputs] = useState({});
+  const [action, setAction] = useState("ADDING");
+
+  const columns = ["Nom de doctorant", "Prénom de doctorant", "Intitulé de la Thèse", "Directeur de thèse", "Co-Directeur de thèse", "Cotutelle (CT) - Codirection (CD) -Non", "Année de 1 ère inscription", "Date de soutenance"];
+
+  const inputsSkeleton = [
+    { name: "lastName", label: columns[0], type: "input" },
+    { name: "firstName", label: columns[1], type: "input" },
+    { name: "thesisTitle", label: columns[2], type: "input" },
+    {
+      name: "supervisor",
+      label: columns[3],
+      type: "select",
+      options: supervisors,
+    },
+    {
+      name: "coSupervisor",
+      label: columns[4],
+      type: "select",
+      options: supervisors,
+    },
+    { name: "cotutelle", label: columns[5], type: "input" },
+    { name: "start", label: columns[6], type: "input" },
+    { name: "end", label: columns[7], type: "input" },
+  ];
+
+  const clearInputs = () => {
+    setInputs(() => ({
+      firstName: "",
+      lastName: "",
+      thesisTitle: "",
+      supervisor_id: "",
+      coSupervisor: "",
+      cotutelle: "",
+      start: "",
+      end: "",
+    }));
+  };
+
+  const updatePhdStudentData = useCallback(async () => {
+    try {
+      const response = await phdStudentService.findAllPhdStudents();
+      console.log("RESPONSE", response);
+      if (response.data) {
+        
+        const filteredPhds = []
+        response.data.forEach((student) => {
+          if(student.supervisor._id.localeCompare(user._id) === 0 || student.coSupervisor._id.localeCompare(user._id) === 0){
+            filteredPhds.push(student)
+            console.log("Got filtered",filteredPhds)
+          }
+        })
+        const filteredPhdStudents = 
+        filteredPhds.map((st) => ({
+          ...st,
+          coSupervisor: st.coSupervisor === null ? "" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+          cotutelle: st.cotutelle ? "oui" : "non",
+        }));
+        response.data.forEach((st) => {
+          let sup = [];
+          let supervisor = {...user,name:[user.firstName, user.lastName].join(" ")}
+          sup.push(supervisor);
+          console.log("SSS",sup)
+          setSupervisors(sup);
+
+        });
+        console.log("USER", user);
+        setPhdStudents(filteredPhdStudents);
+      } else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les données des doctorants",
+      });
+    }
+  }, [user]);
+
+  const editPhdStudent = (student) => {
+    setAction("EDITING");
+    setInputs((inputs) => ({
+      ...inputs,
+      ...student,
+    }));
+  };
+
+  const addPhdStudent = async () => {
+    try {
+      console.log("HERE");
+      let student = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor.localeCompare("") === 0 ? null : inputs.coSupervisor,supervisor:inputs.supervisor_id }
+      const response = await phdStudentService.createPhdStudent(student);
+      if (response.data) {
+        updatePhdStudentData();
+        clearInputs();
+      } else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de créer le doctorant" });
+    }
+  };
+
+  const updatePhdStudent = async (student) => {
+    try {
+      let newStudent = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor.localeCompare("") === 0 ? null : inputs.coSupervisor,supervisor:inputs.supervisor_id }
+      const response = await phdStudentService.updatePhdStudent({
+        ...student,
+        ...newStudent,
+      });
+      if (response.data) {
+        setAction("ADDING");
+        updatePhdStudentData();
+        clearInputs();
+      } else throw Error();
+    } catch (error) {
+      pushAlert({
+        message: "Incapable de mettre à jour les données du doctorant",
+      });
+    }
+  };
+
+  const deletePhdStudent = async (student) => {
+    try {
+      const response = await phdStudentService.deletePhdStudent(student._id);
+      if (response.data) updatePhdStudentData();
+      else throw Error();
+    } catch (error) {
+      pushAlert({ message: "Incapable de supprimer le doctorant" });
+    }
+  };
+
+  const managePhdStudent = ({ _id }) => {
+    history.push(`/phdStudent/${_id}`);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    return action === "ADDING" ? addPhdStudent() : action === "EDITING" ? updatePhdStudent() : updatePhdStudentData();
+  };
+
+  const cancelEdit = () => {
+    clearInputs();
+    setAction("ADDING");
+  };
+
+  useEffect(() => {
+    updatePhdStudentData();
+    clearInputs();
+    console.log("DD", phdStudents);
+  }, []);
+
+  return (
+    <Fragment>
+      <div className="page-header">
+        <PageHeader title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(user)}`} subTitle={`${phdStudents.length} doctorant(s)`} />
+      </div>
+      <div className="row row-cards row-deck">
+        <div className="col-md-12">
+          <CRUDTable
+            columns={columns}
+            data={phdStudents}
+            tableSkeleton={inputsSkeleton}
+            actions={[
+              { name: "Gérer", function: managePhdStudent, style: "primary" },
+              { name: "Modifier", function: editPhdStudent, style: "primary" },
+              {
+                name: "Supprimer",
+                function: deletePhdStudent,
+                style: "danger",
+              },
+            ]}
+          />
+        </div>
+        <div className="col-md-7">
+          <CRUDForm
+            {...{
+              inputs,
+              setInputs,
+              inputsSkeleton,
+              handleSubmit,
+              cancelEdit,
+              action,
+            }}
+          />
+        </div>
+      </div>
+    </Fragment>
+  );
+};
+
+export default PhdPage;
