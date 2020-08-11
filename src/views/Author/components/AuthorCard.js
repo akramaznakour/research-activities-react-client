@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AuthorCard = ({ author }) => {
   return (
-    <div className="col-md-4">
+    <div className="col-lg-4 col-md-6 ">
       <div className="card">
         <div className="card-body p-3">
           {author.platform === "scopus" && <ScopusCard author={author} />}
