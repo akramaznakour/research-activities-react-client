@@ -29,9 +29,12 @@ const CRUDForm = ({
           ...inputs,
           [input.name + "_id"]: input.options[0]._id,
         }));
-        console.log("II",inputsSkeleton);
+       
     });
   }, [inputs, inputsSkeleton, setInputs]);
+
+  
+  
 
   return (
     <div className="card">
@@ -57,7 +60,7 @@ const CRUDForm = ({
                     type="text"
                     className="form-control"
                     onChange={handleInputsChange}
-                    value={inputs[input.name]}
+                    value={inputs[input.name] || ""}
                     name={input.name}
                   />
                 </div>
@@ -69,7 +72,7 @@ const CRUDForm = ({
                   <select
                     name={input.name + "_id"}
                     onChange={handleInputsChange}
-                    value={inputs[input.name + "_id"]}
+                    value={inputs[input.name + "_id"] || ''}
                     className="form-control"
                   >
                     {input.options.map((option, index) => (
