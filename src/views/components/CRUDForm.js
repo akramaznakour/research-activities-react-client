@@ -15,6 +15,7 @@ const CRUDForm = ({
       ...inputs,
       [event.target.name]: event.target.value,
     }));
+
   };
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const CRUDForm = ({
           ...inputs,
           [input.name + "_id"]: input.options[0]._id,
         }));
+        console.log("II",inputsSkeleton);
     });
   }, [inputs, inputsSkeleton, setInputs]);
 

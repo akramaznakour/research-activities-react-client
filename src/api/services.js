@@ -30,6 +30,17 @@ const makeUserService = (api) => ({
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
 });
+// const makePhdService = (api) => ({
+//   createUser: (user) => api.post(`/users`, user),
+//   updateUser: (user) => api.put(`/users`, user),
+//   findUser: (_id) => api.get(`/users/${_id}`),
+//   findAllUsers: () => api.get(`/users`),
+//   deleteUser: (_id) => api.delete(`/users/${_id}`),
+ 
+ 
+  
+  
+// });
 
 const makeUniversityService = (api) => ({
   createUniversity: (university) => api.post(`/universities`, university),
@@ -77,7 +88,14 @@ const makeTeamService = (api) => ({
   associateHeadToTeam: (team_id, head_id) =>
     api.get(`/team-head-association/${team_id}/${head_id}`),
 });
-
+const makePhdStudentsService = (api) => ({
+  createPhdStudent: (phdStudent) => api.post(`/phdStudents`, phdStudent),
+  updatePhdStudent: (phdStudent) => api.put(`/phdStudents`, phdStudent),
+  findAllPhdStudents: () => api.get(`/phdStudents`),
+  findstudent: (_id) => api.get(`/phdStudents/${_id}`),
+  deletePhdStudent: (_id) => api.delete(`/phdStudents/${_id}`),
+ 
+});
 const makeStatisticsService = (api) => ({
   getStatistics: (filter) => api.get(`/statistics`, { params: filter }),
 });
@@ -106,6 +124,7 @@ export {
   makeEstablishmentService,
   makeLaboratoryService,
   makeTeamService,
+  makePhdStudentsService,
   makeScraperService,
   makeAuthentificationService,
   makeStatisticsService,
