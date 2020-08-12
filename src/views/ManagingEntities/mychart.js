@@ -59,7 +59,7 @@ layout: OrgChart.tree,
       },
       menu: {
         pdfWithTitle: {                
-            text: 'A4 PDF',
+            text: "Imprimer l'arborescence",
             icon: OrgChart.icon.pdf(24, 24),
             onClick: function () {
                 this.exportPDF({
