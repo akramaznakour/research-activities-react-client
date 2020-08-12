@@ -56,7 +56,7 @@ const PhdPage = () => {
   const findAllUsers = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
-      let coSup = [];
+      let coSup = [{_id:null}];
       response.data.forEach((user) => {
         coSup.push({ _id: user._id, name: [user.firstName, user.lastName].join(" ") });
       });
@@ -78,15 +78,16 @@ const PhdPage = () => {
         //     console.log("Got filtered",filteredPhds)
         //   }
         // })
-        const filteredPhdStudents = response.data.map((st) => ({
-          ...st,
-          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
-          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
-          cotutelle: st.cotutelle ? "oui" : "non",
-        }));
+        const filteredPhdStudents = response.data
+          .map((st) => ({
+            ...st,
+            coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+            supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+            cotutelle: st.cotutelle ? "oui" : "non",
+          }));
         response.data.forEach((st) => {
           let sup = [];
-          let supervisor = { ...user, name: [user.firstName, user.lastName].join(" ") };
+          let supervisor =  { _id: user._id, name: [user.firstName, user.lastName].join(" ") } ;
           sup.push(supervisor);
           console.log("SSS", sup);
           setSupervisors(sup);
@@ -112,7 +113,10 @@ const PhdPage = () => {
   const addPhdStudent = async () => {
     try {
       console.log("HERE");
-      let student = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
+      console.log("BEFORE", inputs);
+      let student = {coSupervisor: inputs.coSupervisor_id,cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true,end: inputs.end,firstName: inputs.firstName,lastName: inputs.lastName,start: inputs.start, supervisor: inputs.supervisor_id,thesisTitle: inputs.thesisTitle
+      }
+      // let student = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("") === 0  ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
       console.log("BEFORE", student);
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
@@ -177,7 +181,7 @@ const PhdPage = () => {
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader title={`Vos Doctorants Monsieur ${[user.firstName,user.lastName].join(' ')}`} subTitle={`${phdStudents.length} doctorant(s)`} />
+        <PageHeader title={`Vos Doctorants Monsieur ${[user.firstName, user.lastName].join(" ")}`} subTitle={`${phdStudents.length} doctorant(s)`} />
       </div>
       <div className="row row-cards row-deck">
         <div className="col-md-12">
