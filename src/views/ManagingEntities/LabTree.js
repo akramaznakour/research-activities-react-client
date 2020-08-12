@@ -81,7 +81,7 @@ const LabTree = () => {
       <div className="page-header">
         <PageHeader title={`Organigramme de laboratoire ${UserHelper.userHeadedLaboratories(user)}`} />
       </div>
-      <div style={{ height: "100%" }}>{!isLoading ? <OrgChart nodes={nodes} /> : "L'organigramme se charge ..."}</div>
+      <div style={{ height: "100%" }}>{!isLoading ? <OrgChart name={["Laboratoire",UserHelper.userHeadedLaboratories(user)].join(' ')} nodes={nodes} /> : "L'organigramme se charge ..."}</div>
     </Fragment>
   );
 };
