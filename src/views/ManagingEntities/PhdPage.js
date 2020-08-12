@@ -10,10 +10,12 @@ const PhdPage = () => {
   const history = useHistory();
   const { user, ApiServices, UserHelper, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { phdStudentService } = ApiServices;
+  const { phdStudentService, userService } = ApiServices;
   const [phdStudents, setPhdStudents] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
+  const [coSupervisors, setCoSupervisors] = useState([]);
 
+  const [users, setUsers] = useState([]);
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
 
@@ -33,7 +35,7 @@ const PhdPage = () => {
       name: "coSupervisor",
       label: columns[4],
       type: "select",
-      options: supervisors,
+      options: coSupervisors,
     },
     { name: "cotutelle", label: columns[5], type: "input" },
     { name: "start", label: columns[6], type: "input" },
@@ -46,12 +48,26 @@ const PhdPage = () => {
       lastName: "",
       thesisTitle: "",
       supervisor_id: "",
-      coSupervisor: "",
+      coSupervisor_id: "",
       cotutelle: "",
       start: "",
       end: "",
     }));
   };
+  const findAllUsers = useCallback(async () => {
+    try {
+      
+      const response = await userService.findAllUsers();
+      let coSup = [];
+      response.data.forEach((user) => {
+        coSup.push({_id:user._id,name:[user.firstName,user.lastName].join(' ')});
+      }
+      )
+      setCoSupervisors(coSup)        
+    } catch (error) {
+      pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
+    }
+  }, []);
 
   const updatePhdStudentData = useCallback(async () => {
     try {
@@ -59,17 +75,17 @@ const PhdPage = () => {
       console.log("RESPONSE", response);
       if (response.data) {
         
-        const filteredPhds = []
-        response.data.forEach((student) => {
-          if(student.supervisor._id.localeCompare(user._id) === 0 || student.coSupervisor._id.localeCompare(user._id) === 0){
-            filteredPhds.push(student)
-            console.log("Got filtered",filteredPhds)
-          }
-        })
+        // const filteredPhds = []
+        // response.data.forEach((student) => {
+        //   if(student.supervisor._id.localeCompare(user._id) === 0 || student.coSupervisor._id.localeCompare(user._id) === 0){
+        //     filteredPhds.push(student)
+        //     console.log("Got filtered",filteredPhds)
+        //   }
+        // })
         const filteredPhdStudents = 
-        filteredPhds.map((st) => ({
+        response.data.map((st) => ({
           ...st,
-          coSupervisor: st.coSupervisor === null ? "" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+          coSupervisor:  st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
@@ -81,7 +97,8 @@ const PhdPage = () => {
           setSupervisors(sup);
 
         });
-        console.log("USER", user);
+        
+
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
     } catch (error) {
@@ -102,7 +119,8 @@ const PhdPage = () => {
   const addPhdStudent = async () => {
     try {
       console.log("HERE");
-      let student = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor.localeCompare("") === 0 ? null : inputs.coSupervisor,supervisor:inputs.supervisor_id }
+      let student = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id,supervisor:inputs.supervisor_id }
+      console.log("BEFORE",student)
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
         updatePhdStudentData();
@@ -115,7 +133,7 @@ const PhdPage = () => {
 
   const updatePhdStudent = async (student) => {
     try {
-      let newStudent = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor.localeCompare("") === 0 ? null : inputs.coSupervisor,supervisor:inputs.supervisor_id }
+      let newStudent = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id,supervisor:inputs.supervisor_id }
       const response = await phdStudentService.updatePhdStudent({
         ...student,
         ...newStudent,
@@ -158,9 +176,9 @@ const PhdPage = () => {
   };
 
   useEffect(() => {
+    findAllUsers();
     updatePhdStudentData();
     clearInputs();
-    console.log("DD", phdStudents);
   }, []);
 
   return (
