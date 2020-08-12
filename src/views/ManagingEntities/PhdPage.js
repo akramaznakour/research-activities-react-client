@@ -15,7 +15,6 @@ const PhdPage = () => {
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
 
-  const [users, setUsers] = useState([]);
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
 
@@ -56,14 +55,12 @@ const PhdPage = () => {
   };
   const findAllUsers = useCallback(async () => {
     try {
-      
       const response = await userService.findAllUsers();
       let coSup = [];
       response.data.forEach((user) => {
-        coSup.push({_id:user._id,name:[user.firstName,user.lastName].join(' ')});
-      }
-      )
-      setCoSupervisors(coSup)        
+        coSup.push({ _id: user._id, name: [user.firstName, user.lastName].join(" ") });
+      });
+      setCoSupervisors(coSup);
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -74,7 +71,6 @@ const PhdPage = () => {
       const response = await phdStudentService.findAllPhdStudents();
       console.log("RESPONSE", response);
       if (response.data) {
-        
         // const filteredPhds = []
         // response.data.forEach((student) => {
         //   if(student.supervisor._id.localeCompare(user._id) === 0 || student.coSupervisor._id.localeCompare(user._id) === 0){
@@ -82,22 +78,19 @@ const PhdPage = () => {
         //     console.log("Got filtered",filteredPhds)
         //   }
         // })
-        const filteredPhdStudents = 
-        response.data.map((st) => ({
+        const filteredPhdStudents = response.data.map((st) => ({
           ...st,
-          coSupervisor:  st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
         response.data.forEach((st) => {
           let sup = [];
-          let supervisor = {...user,name:[user.firstName, user.lastName].join(" ")}
+          let supervisor = { ...user, name: [user.firstName, user.lastName].join(" ") };
           sup.push(supervisor);
-          console.log("SSS",sup)
+          console.log("SSS", sup);
           setSupervisors(sup);
-
         });
-        
 
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
@@ -119,8 +112,8 @@ const PhdPage = () => {
   const addPhdStudent = async () => {
     try {
       console.log("HERE");
-      let student = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id,supervisor:inputs.supervisor_id }
-      console.log("BEFORE",student)
+      let student = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
+      console.log("BEFORE", student);
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
         updatePhdStudentData();
@@ -133,7 +126,7 @@ const PhdPage = () => {
 
   const updatePhdStudent = async (student) => {
     try {
-      let newStudent = {...inputs,cotutelle:inputs.cotutelle.localeCompare('non') === 0 ? false : true,coSupervisor:inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id,supervisor:inputs.supervisor_id }
+      let newStudent = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
       const response = await phdStudentService.updatePhdStudent({
         ...student,
         ...newStudent,
@@ -184,7 +177,7 @@ const PhdPage = () => {
   return (
     <Fragment>
       <div className="page-header">
-        <PageHeader title={`Équipes de votre laboratoire ${UserHelper.userHeadedLaboratories(user)}`} subTitle={`${phdStudents.length} doctorant(s)`} />
+        <PageHeader title={`Vos Doctorants Monsieur ${[user.firstName,user.lastName].join(' ')}`} subTitle={`${phdStudents.length} doctorant(s)`} />
       </div>
       <div className="row row-cards row-deck">
         <div className="col-md-12">
