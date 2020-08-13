@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 
 const PhdPage = () => {
   const history = useHistory();
-  const { user, ApiServices, UserHelper, alertService } = useContext(AppContext);
+  const { user, ApiServices,  alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { phdStudentService, userService } = ApiServices;
   const [phdStudents, setPhdStudents] = useState([]);
@@ -85,10 +85,12 @@ const PhdPage = () => {
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
         let sup = [];
-        response.data.forEach((st) => {
-          let supervisor = { _id: user._id, name: [user.firstName, user.lastName].join(" ") };
-          sup.push(supervisor);
-        });
+        let supervisor = { _id: user._id, name: [user.firstName, user.lastName].join(" ") };
+        sup.push(supervisor);
+        // response.data.forEach((st) => {
+        //   let supervisor = { _id: user._id, name: [user.firstName, user.lastName].join(" ") };
+        //   sup.push(supervisor);
+        // });
         setSupervisors(sup);
 
         setPhdStudents(filteredPhdStudents);

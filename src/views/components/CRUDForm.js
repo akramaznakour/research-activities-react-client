@@ -54,8 +54,8 @@ const CRUDForm = ({
         <div className={`card-body `}>
         <ul className='form' >
           {inputsSkeleton.map((input,index) => (
-            <li className='form'>
-            <Fragment key={index}>
+            <li className='form'  key={index}>
+            <Fragment>
               {input.type === "input" && (
                 <div className="form-group mt-2">
                   <label className="form-label">{input.label}</label>
