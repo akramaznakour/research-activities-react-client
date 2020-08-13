@@ -193,7 +193,7 @@ const PhdPage = () => {
             ]}
           />
         </div>
-        <div className="col-md-7">
+        <div className="col-md-12">
           <CRUDForm
             {...{
               inputs,

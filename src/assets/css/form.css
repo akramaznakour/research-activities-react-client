@@ -1,0 +1,13 @@
+ul.form {
+    width: 100%;
+}
+ul.form li.form {
+    width: 49%;
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+ul.form li.form > * {
+    width: 100%;
+}
