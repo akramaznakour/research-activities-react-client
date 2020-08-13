@@ -11,3 +11,7 @@ ul.form li.form {
 ul.form li.form > * {
     width: 100%;
 }
+
+ul.none {
+    list-style-type :none
+}

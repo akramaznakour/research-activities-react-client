@@ -7,6 +7,7 @@ const CRUDForm = ({
   handleSubmit,
   cancelEdit,
   action,
+  twoColumns
 }) => {
 
  
@@ -51,10 +52,10 @@ const CRUDForm = ({
           </h3>
         </div>
 
-        <div className={`card-body `}>
-        <ul className='form' >
+        <div className={`card-body form `}>
+        <ul className={twoColumns || "none"} >
           {inputsSkeleton.map((input,index) => (
-            <li className='form'  key={index}>
+            <li className={twoColumns || ""}  key={index}>
             <Fragment>
               {input.type === "input" && (
                 <div className="form-group mt-2">

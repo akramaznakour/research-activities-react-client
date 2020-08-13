@@ -77,21 +77,13 @@ const PhdPage = () => {
             return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
           }
         });
-        // .filter((st) => st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0);
         const filteredPhdStudents = filteredData.map((st) => ({
           ...st,
           coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
-        let sup = [];
-        let supervisor = { _id: user._id, name: [user.firstName, user.lastName].join(" ") };
-        sup.push(supervisor);
-        // response.data.forEach((st) => {
-        //   let supervisor = { _id: user._id, name: [user.firstName, user.lastName].join(" ") };
-        //   sup.push(supervisor);
-        // });
-        setSupervisors(sup);
+        setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
 
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
@@ -112,7 +104,7 @@ const PhdPage = () => {
 
   const addPhdStudent = async () => {
     try {
-      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : inputs.cotutelle.localeCompare("oui") === 0 ? true : pushAlert({message:"cotutell doit être oui ou non"}), end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
         updatePhdStudentData();
@@ -197,6 +189,7 @@ const PhdPage = () => {
         </div>
         <div className="col-md-12">
           <CRUDForm
+         
             {...{
               inputs,
               setInputs,
@@ -204,6 +197,7 @@ const PhdPage = () => {
               handleSubmit,
               cancelEdit,
               action,
+              twoColumns:"form"
             }}
           />
         </div>
