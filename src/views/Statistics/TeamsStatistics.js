@@ -8,6 +8,7 @@ import StatisticsFilter from "./components/StatisticsFilter";
 import C3Chart from "react-c3js";
 import "c3/c3.css";
 import LabFilter from "../components/LabFilter";
+import NoResultFound from "../components/NoResultFound";
 
 const TeamsStatistics = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
@@ -189,7 +190,7 @@ const TeamsStatistics = () => {
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-                 
+                 {filteredResearchersStatistics.length > 0 && (
                   <C3Chart
                     key={chartVersion}
                     data={chart.data}
@@ -201,6 +202,10 @@ const TeamsStatistics = () => {
                       show: true,
                     }}
                   />
+                  )}
+                  {filteredResearchersStatistics.length === 0 && (
+                  <NoResultFound query={searchTerm} />
+                )}
              
               </div>
             </div>

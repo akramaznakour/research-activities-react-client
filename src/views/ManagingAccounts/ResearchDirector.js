@@ -14,54 +14,26 @@ import Loader from "../components/Loader";
 import UserListItem from "../Author/components/UserListItem";
 
 const Laboratory = () => {
-  const { laboratoryId } = useParams();
-
-  const [laboratoryHeads, setLaboratoryHeads] = useState([]);
-  const [laboratory, setLaboratory] = useState(null);
-  const [establishments, setEstablishments] = useState([]);
+ 
+  const [establishmentsList, setEstablishmentsList] = useState([]);
   const [researchDirector, setResearchDirector] = useState(null);
   const [users, setUsers] = useState([]);
+  const [newDirectorId, setNewDirectorId] = useState(null);
+  const [establishment, setEstablishment] = useState(null);
 
   const { ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { laboratoryService, userService, establishmentService, universityService } = ApiServices;
-
-  const getLaboratoryData = useCallback(async () => {
-    try {
-      const response = await laboratoryService.findLaboratory(laboratoryId);
-      if (response.data) setLaboratory(response.data);
-      else setLaboratory(
-        {
-          _id: "5f215c04a4a9d11820be456f"
-          , name: "Laboratoire de Technologies de l'Information",
-          abbreviation: "LTI",
-          establishment_id: "5f215c04a4a9d11820be456e",
-          head_id: "5f215c02a4a9d11820be453b",
-          head_history: []
-        });
-    } catch (error) {
-      pushAlert({ message: "Incapable d'obtenir les données de laboratoire" });
-    }
-  }, [laboratoryId]);
-
+  const { establishmentService, userService } = ApiServices;
 
   const getEstablishments = useCallback(async () => {
+
     try {
       const response = await establishmentService.findAllEstablishments();
-      if (response.data) setEstablishments(response.data);
-      else throw Error();
-    } catch (error) {
-      pushAlert({
-        message: "Incapable d'obtenir les données des chefs des laboratoires",
-      });
-    }
-  }, []);
-
-
-  const getResearchDirector = useCallback(async () => {
-    try {
-      const response = await universityService.getResearchDirector();
-      if (response.data) setResearchDirector(response.data);
+      if (response.data) {
+        setEstablishmentsList(response.data);
+        setEstablishment(response.data[0]);
+        }
+          
       else throw Error();
     } catch (error) {
       pushAlert({
@@ -87,39 +59,48 @@ const Laboratory = () => {
 
   const requestUpdate = useCallback(() => {
     getEstablishments();
-    getResearchDirector();
     getResearchers();
-  }, [getEstablishments, getResearchDirector, getResearchers]);
+
+  }, [getEstablishments, getResearchers]);
 
   useEffect(() => {
     requestUpdate();
   }, [requestUpdate]);
 
-  const [newDirectorIds, setNewDirectorIds] = useState(new Map());
+
 
   const handleDirectorChange = (event) => {
     event.persist();
-    let state = newDirectorIds;
-    state.set(event.target.name, event.target.value)
-    setNewDirectorIds(state);
+    setNewDirectorId  (event.target.value);
 
-    console.log(newDirectorIds);
+    console.log(newDirectorId);
   };
+
+  const handleChangeEts = async(event) => {
+
+    const selectedEts = establishmentsList.find(element => element._id == event.target.value);
+    setEstablishment(selectedEts);
+    
+  };
+
 
   const handelButtonClick = async (event) => {
     event.preventDefault();
-    if (!newDirectorIds) return;
+    if (!newDirectorId) return;
     try {
       const response = await establishmentService.setEstablishmentResearchDirector(
-        event.target.name,
-        newDirectorIds.get(event.target.name)
+        establishment._id,
+        newDirectorId
       );
 
-      if (response.data)
+      if (response.data){
         pushAlert({
           message: "Le directeur de recherche a été changé avec succès.",
           type: "success",
         });
+        
+      }
+        
       else throw Error();
     } catch (error) {
       pushAlert({ message: "Erreur lors du changement de directeur de recherche." });
@@ -128,18 +109,20 @@ const Laboratory = () => {
     }
   };
 
+
+  
+ 
   return (
     <div className="container">
       <PageHeader
         title="Gestion des comptes directeurs de recherche"
         subTitle="Directeur de recherche"
       />
-      {establishments == null && <Loader size="60" />}
-        {
-          establishments.map((establishment) => (
-
+      {establishmentsList == null && <Loader size="60" />}
+    
             <div className="row">
-              <div className="col-md-10">
+              {establishment !=null && (
+                <div className="col-md-10">
                 <div className="card">
                   <div className="card-body bg-blue">
                     <div className="row">
@@ -152,6 +135,7 @@ const Laboratory = () => {
                   </div>
                 </div>
               </div>
+              )}
               <div className="col-md-6">
                 {establishment != null && (
                   <div className="card">
@@ -165,6 +149,25 @@ const Laboratory = () => {
                     </div>
 
                     <div className="p-4 pt-0 ">
+                      <div className="form-label">
+                        Sélectionner l'établissement
+                      </div>
+                      <select className="form-select" onChange={handleChangeEts}>
+                        <option value disabled>
+                          Sélectionnner l'établissement
+                        </option>
+                        {establishmentsList.map((establishment) => (
+                          <option
+                            key={establishment._id}
+                            value={establishment._id}
+                          >
+                            {establishment.name}
+
+                          </option>
+                        ))}
+                        
+                      </select>
+
                       <div className="form-label">
                         Sélectionner le directeur de recherche
                         </div>
@@ -227,8 +230,6 @@ const Laboratory = () => {
                   )}
               </div>
             </div>
-          ))
-        }
       </div>
   );
 };
@@ -247,6 +248,7 @@ const ResearchDirector = ({ director }) => {
     </Fragment>
   )
 };
+
 
 
 export default Laboratory;

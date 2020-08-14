@@ -1,8 +1,9 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { LoopIcon } from "./icons";
 import { Link } from "react-router-dom";
+import Collapsible from "./Collapsible";
 
-const LabFilter = ({ laboratories , setSelectedLabs, selectedLabs}) => {
+const LabFilter = ({ establishments, laboratories , setSelectedLabs, selectedLabs,  currentLab, setCurrentLab}) => {
 
   
   return (
@@ -11,7 +12,7 @@ const LabFilter = ({ laboratories , setSelectedLabs, selectedLabs}) => {
 
       {
         <FilteringCategory
-          {...{ laboratories , setSelectedLabs, selectedLabs}}
+          {...{ establishments,laboratories , setSelectedLabs, selectedLabs, currentLab, setCurrentLab}}
         />
       }
     </form>
@@ -19,37 +20,89 @@ const LabFilter = ({ laboratories , setSelectedLabs, selectedLabs}) => {
 };
 
 export default LabFilter;
-const FilteringCategory = ({laboratories, setSelectedLabs, selectedLabs }) => {
+const FilteringCategory = ({establishments, laboratories, setSelectedLabs, selectedLabs, currentLab, setCurrentLab }) => {
+  let LabsPerEstablishment = [];
+  establishments.map(estab => {
+    LabsPerEstablishment.push({
+      'estab' : estab.name,
+      'labs' :[],
+    })
+  })
+  if(LabsPerEstablishment.length!== 0)
+ { laboratories.map(lab =>{
+    for (let i in LabsPerEstablishment){
+
+
+        if (LabsPerEstablishment[i].estab === lab.establishment){
+          LabsPerEstablishment[i].labs.push(lab);
+        }
+    }
+  })};
+
   return (
     <Fragment>
       <div className="subheader mb-2">Laboratories</div>
       <div className="list-group list-group-transparent mb-3">
-        {laboratories.map(( lab, index) => (
-          <FilteringOption key={index} {...{ lab , setSelectedLabs, selectedLabs}} />
+        {LabsPerEstablishment.map(( estab, index) => (
+          <DropDown key={index} {...{ estab , setSelectedLabs, selectedLabs, currentLab, setCurrentLab}} />
         ))}
       </div>
     </Fragment>
   );
 };
 
+const DropDown = ({ estab, setSelectedLabs, selectedLabs,  currentLab, setCurrentLab }) =>{
+  return (
+    
+  
+    
+      <Collapsible title={estab.estab} >
+   {estab.labs.map(( lab, index) => (
+          <FilteringOption key={index} {...{ lab , setSelectedLabs, selectedLabs,  currentLab, setCurrentLab}} />
+        ))}
+      
+      
+   
+    </Collapsible>
+ 
+  
 
+  )}
 
-const FilteringOption = ({ lab, setSelectedLabs, selectedLabs }) => {
+const FilteringOption = ({ lab, setSelectedLabs, selectedLabs,  currentLab, setCurrentLab }) => {
   const classes =
     "list-group-item list-group-item-action d-flex align-items-center ";
 
   const updateFilter = (e) => {
     e.preventDefault();
-    setSelectedLabs(lab);
-    
-    console.log(isActive);
-    console.log(selectedLabs);
+    setCurrentLab(lab);
+    let inSelectedLabsPos = -1;
+    for(let i in selectedLabs)
+    {  if(selectedLabs[i].name === lab.name)
+       {
+        inSelectedLabsPos= i;
+       }
+    }
+    if(inSelectedLabsPos > -1){
+      setSelectedLabs((selectedLabs)=> {
+        let array=[...selectedLabs];
+        array.splice(inSelectedLabsPos,1);
+        return(array)
+      });
+    }
+    else{
+      setSelectedLabs(selectedLabs=> selectedLabs.concat(lab));
+    }
    
   };
-
-  const isActive = selectedLabs
-  ? selectedLabs.name === lab.name
-  : false;
+  let isActive;
+for(let i in selectedLabs)
+ {  if(selectedLabs[i].name === lab.name)
+    {
+      isActive= true;
+    }
+  
+}
   return (
     <Link
       to="/#"
@@ -57,7 +110,7 @@ const FilteringOption = ({ lab, setSelectedLabs, selectedLabs }) => {
       onClick={updateFilter}
     >
       {lab.name}
-      <small className="text-muted ml-auto">{lab.membershipCount}</small>
+      
     </Link>
   );
 };
