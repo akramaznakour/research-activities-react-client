@@ -3,13 +3,11 @@ import "../../assets/css/form.css";
 const CRUDForm = ({ inputs, setInputs, inputsSkeleton, handleSubmit, cancelEdit, action, twoColumns }) => {
   const handleInputsChange = (event) => {
     event.persist();
-    console.log("EVENT",event.target.value)
     setInputs((inputs) => ({
       ...inputs,
       [event.target.name]: event.target.value,
     }));
 
-    console.log("INPUT",inputs[event.target.name])
 
   };
 

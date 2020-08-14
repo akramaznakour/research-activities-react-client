@@ -53,14 +53,16 @@ const PhdPage = () => {
       end: "",
     }));
   };
-  const findAllUsers = useCallback(async () => {
+  const setSupervisorsAndCoSupervisors = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
       let coSup = [{ _id: null }];
-      response.data.forEach((user) => {
-        coSup.push({ _id: user._id, name: [user.firstName, user.lastName].join(" ") });
+      response.data.forEach((researcher) => {
+        coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
       setCoSupervisors(coSup);
+      setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
+
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -77,14 +79,12 @@ const PhdPage = () => {
             return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
           }
         });
-        console.log("DATA",filteredData)
         const filteredPhdStudents = filteredData.map((st) => ({
           ...st,
           coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
-        setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
 
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
@@ -162,7 +162,7 @@ const PhdPage = () => {
   };
 
   useEffect(() => {
-    findAllUsers();
+    setSupervisorsAndCoSupervisors();
     updatePhdStudentData();
     clearInputs();
   }, []);
