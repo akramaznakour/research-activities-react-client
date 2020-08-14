@@ -84,7 +84,6 @@ const PhdPage = () => {
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
-        setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
 
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
@@ -162,6 +161,7 @@ const PhdPage = () => {
   };
 
   useEffect(() => {
+    setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
     findAllUsers();
     updatePhdStudentData();
     clearInputs();
