@@ -65,6 +65,7 @@ export default class extends Component {
           icon: OrgChart.icon.pdf(24, 24),
           onClick: function () {
             this.exportPDF({
+              filename: `${that.props.fileName}.pdf`,
               header: that.props.name,
               footer: "",
               format: "A4",

@@ -60,42 +60,55 @@ const Notifications = () => {
   }, []);
 
   const checkFollowedResearcher = useCallback(
-    async (user, index) => {
+    async (followedUser, index) => {
+      console.log(
+        "Checking new publication of :",
+        followedUser.firstName,
+        followedUser.lastName
+      );
+
       try {
         const response = await scraperService.getAuthorData(
-          "scholar",
-          user.authorId
+          followedUser.platform,
+          followedUser.authorId
         );
-        const currentPublications = response.data.author.publications;
-        console.log("user:", user.lastName);
-        console.log("currentPublications.length", currentPublications.length);
-        console.log("user.publications.length", user.publications.length);
-        if (currentPublications.length > user.publications.length) {
-          console.log("notifyFolloweers");
-          const oldPublicationsShortTitles = user.publications.map(
-            ({ title }) => title.substr(0, 40)
-          );
-          console.log("oldPublicationsTitles", oldPublicationsShortTitles);
 
-          const newPublications = currentPublications.filter(
-            ({ title }) =>
-              !oldPublicationsShortTitles.includes(title.substr(0, 40))
-          );
+        if (!response.data.author) throw new Error();
 
-          const responses = await Promise.all(
-            newPublications.map(
-              async ({ title }) =>
-                await notificationsService.notifyFolloweers({
-                  authorId: user.authorId,
-                  publication: title,
-                  followedUserId: user.user_id,
-                  currentPublications,
-                })
-            )
-          );
+        const scrapedPublications = response.data.author.publications;
 
-          console.log("responses", responses);
-        }
+        console.log("scrapedPublications : ", scrapedPublications.length);
+
+        const storedPublicationsTitles = followedUser.publications.map(
+          ({ title }) => title
+        );
+
+        console.log(
+          "storedPublicationsTitles : ",
+          storedPublicationsTitles.length
+        );
+
+        const newPublications = scrapedPublications.filter(
+          ({ title }) => !storedPublicationsTitles.includes(title)
+        );
+
+        console.log(
+          "%cNew publications of %s",
+          "color: #8a6d3b;background-color: #fcf8e3;",
+          `${followedUser.firstName} ${followedUser.lastName} : ${newPublications.length}`
+        );
+
+        const responses = await Promise.all(
+          newPublications.map(
+            async ({ title }) =>
+              await notificationsService.notifyFolloweers({
+                authorId: followedUser.authorId,
+                publication: title,
+                followedUserId: followedUser.user_id,
+                scrapedPublications,
+              })
+          )
+        );
       } catch (error) {
         pushAlert({
           message:
@@ -111,6 +124,7 @@ const Notifications = () => {
   );
 
   const checkAllFollowedResearcher = useCallback(() => {
+    if (followedUsers.length === 0) return;
     followedUsers.forEach((followedUser, index) => {
       setTimeout(async () => {
         checkFollowedResearcher(followedUser, index);

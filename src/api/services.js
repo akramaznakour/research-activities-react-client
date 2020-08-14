@@ -104,15 +104,15 @@ const makeNotificationsService = (api) => ({
   findUserNotifications: (user_id) => api.get(`/notifications/${user_id}`),
   notifyFolloweers: ({
     publication,
+    scrapedPublications,
     followedUserId,
     authorId,
-    currentPublications,
   }) =>
     api.post(`/notify-followers`, {
       publication,
       followed_user_id: followedUserId,
-      scholar_id: authorId,
-      current_publications: currentPublications,
+      author_id: authorId,
+      scraped_publications: scrapedPublications,
     }),
   markNotificationAsRead: (notificationId) =>
     api.post(`/mark-notification-as-read/${notificationId}`),
