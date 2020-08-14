@@ -36,9 +36,9 @@ const PhdPage = () => {
       type: "select",
       options: coSupervisors,
     },
-    { name: "cotutelle", label: columns[5], type: "input" },
+    { name: "cotutelle", label: columns[5], type: "radio" },
     { name: "start", label: columns[6], type: "input" },
-    { name: "end", label: columns[7], type: "input" },
+    { name: "end", label: columns[7], type: "date" },
   ];
 
   const clearInputs = () => {
@@ -48,7 +48,7 @@ const PhdPage = () => {
       thesisTitle: "",
       supervisor_id: "",
       coSupervisor_id: "",
-      cotutelle: "",
+      cotutelle:false,
       start: "",
       end: "",
     }));
@@ -77,6 +77,7 @@ const PhdPage = () => {
             return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
           }
         });
+        console.log("DATA",filteredData)
         const filteredPhdStudents = filteredData.map((st) => ({
           ...st,
           coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
@@ -104,7 +105,8 @@ const PhdPage = () => {
 
   const addPhdStudent = async () => {
     try {
-      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : inputs.cotutelle.localeCompare("oui") === 0 ? true : pushAlert({message:"cotutell doit être oui ou non"}), end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+     console.log("STUDENT",student)
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
         updatePhdStudentData();
