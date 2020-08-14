@@ -111,6 +111,7 @@ const Notifications = () => {
   );
 
   const checkAllFollowedResearcher = useCallback(() => {
+    if (followedUsers.length === 0) return;
     followedUsers.forEach((followedUser, index) => {
       setTimeout(async () => {
         checkFollowedResearcher(followedUser, index);
