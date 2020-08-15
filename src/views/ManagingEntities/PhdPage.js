@@ -36,9 +36,9 @@ const PhdPage = () => {
       type: "select",
       options: coSupervisors,
     },
-    { name: "cotutelle", label: columns[5], type: "input" },
+    { name: "cotutelle", label: columns[5], type: "radio" },
     { name: "start", label: columns[6], type: "input" },
-    { name: "end", label: columns[7], type: "input" },
+    { name: "end", label: columns[7], type: "date" },
   ];
 
   const clearInputs = () => {
@@ -48,19 +48,21 @@ const PhdPage = () => {
       thesisTitle: "",
       supervisor_id: "",
       coSupervisor_id: "",
-      cotutelle: "",
+      cotutelle:false,
       start: "",
       end: "",
     }));
   };
-  const findAllUsers = useCallback(async () => {
+  const setSupervisorsAndCoSupervisors = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
       let coSup = [{ _id: null }];
-      response.data.forEach((user) => {
-        coSup.push({ _id: user._id, name: [user.firstName, user.lastName].join(" ") });
+      response.data.forEach((researcher) => {
+        coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
       setCoSupervisors(coSup);
+      setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
+
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -83,7 +85,6 @@ const PhdPage = () => {
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
           cotutelle: st.cotutelle ? "oui" : "non",
         }));
-        setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
 
         setPhdStudents(filteredPhdStudents);
       } else throw Error();
@@ -104,7 +105,8 @@ const PhdPage = () => {
 
   const addPhdStudent = async () => {
     try {
-      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : inputs.cotutelle.localeCompare("oui") === 0 ? true : pushAlert({message:"cotutell doit être oui ou non"}), end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+     console.log("STUDENT",student)
       const response = await phdStudentService.createPhdStudent(student);
       if (response.data) {
         updatePhdStudentData();
@@ -160,7 +162,7 @@ const PhdPage = () => {
   };
 
   useEffect(() => {
-    findAllUsers();
+    setSupervisorsAndCoSupervisors();
     updatePhdStudentData();
     clearInputs();
   }, []);
