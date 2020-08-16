@@ -24,17 +24,18 @@ const AuthorSearch = () => {
   const { scraperService } = ApiServices;
 
   const authorSearch = useCallback(async () => {
-    if (authors.length) setAuthors([]);
-    if (noResultFound) setNoResultFound(false);
-    if (isError) setIsError(false);
-
     const authorNamePath = authorName.replace(" ", "%20");
 
     try {
       setIsLoading(true);
       const response = await scraperService.authorSearch(authorNamePath);
-      if (response.data.authors) setAuthors(response.data.authors);
-      else if (response.data.error) setNoResultFound(true);
+
+      if (response.data.authors) {
+        if (authors.length) setAuthors([]);
+        setNoResultFound(false);
+        setIsError(false);
+        setAuthors(response.data.authors);
+      } else if (response.data.error) setNoResultFound(true);
       else throw Error();
     } catch (error) {
       pushAlert({ message: "Incapable de rechercher" });
@@ -45,6 +46,10 @@ const AuthorSearch = () => {
   }, [authorName, isError, noResultFound]);
 
   useEffect(() => {
+    if (authors.length) setAuthors([]);
+    if (noResultFound) setNoResultFound(false);
+    if (isError) setIsError(false);
+
     authorSearch();
   }, [authorName]);
 
