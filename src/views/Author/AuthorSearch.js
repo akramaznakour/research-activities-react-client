@@ -42,7 +42,7 @@ const AuthorSearch = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [authorName]);
+  }, [authorName, isError, noResultFound]);
 
   useEffect(() => {
     authorSearch();
