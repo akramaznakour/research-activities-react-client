@@ -62,7 +62,9 @@ const PhdPage = () => {
         coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
       setCoSupervisors(coSup);
+
       setSupervisors([{ _id: user._id, name: [user.firstName, user.lastName].join(" ") }]);
+
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
