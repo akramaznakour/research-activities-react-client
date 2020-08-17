@@ -2,6 +2,7 @@ const userShortBio = ({
   laboratoriesHeaded,
   teamsHeaded,
   teamsMemberships,
+  establishmentsDirected,
   ...user
 }) => {
   if (user.role === "CED_HEAD") return `chef de CED`;
@@ -18,12 +19,18 @@ const userShortBio = ({
     .map(({ abbreviation }) => `membre de l'équipe ${abbreviation}`)
     .join(" , ");
 
-  const shortBio =
-    laboratoriesHeadedString +
-    " " +
-    (teamsHeadedString ?? teamsMembershipsString);
-  if (shortBio.length > 10) return shortBio;
-  else return "Chercheur";
+    const establishmentsDirectedString = establishmentsDirected
+    .map(({ abbreviation }) => `Directeur de recherche de ${abbreviation}`)
+    .join(" , ");
+ 
+  const shortBio = [establishmentsDirectedString, 
+    laboratoriesHeadedString,
+    (teamsHeadedString ?? teamsMembershipsString)];
+
+    return shortBio;
+  /*if (shortBio.length > 10) return shortBio;
+  else return "Chercheur";*/
+
 };
 
 const userHeadedLaboratories = ({ laboratoriesHeaded }) =>
