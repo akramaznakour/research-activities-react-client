@@ -146,9 +146,7 @@ const AuthorReport = ({ author }) => {
                 )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-              {publication.citation && (
                   <Text style={styles.tableCell}>{publication.citation} </Text>
-                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.SJR ?? ""}</Text>
