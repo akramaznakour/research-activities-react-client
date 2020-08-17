@@ -8,12 +8,13 @@ import { useHistory } from "react-router-dom";
 
 const PhdPage = () => {
   const history = useHistory();
-  const { user, ApiServices,  alertService } = useContext(AppContext);
+  const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { phdStudentService, userService } = ApiServices;
   const [phdStudents, setPhdStudents] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
@@ -48,7 +49,7 @@ const PhdPage = () => {
       thesisTitle: "",
       supervisor_id: "",
       coSupervisor_id: "",
-      cotutelle:false,
+      cotutelle: false,
       start: "",
       end: "",
     }));
@@ -61,8 +62,7 @@ const PhdPage = () => {
         coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
       setCoSupervisors(coSup);
-      setSupervisors([{_id:user._id, name: [user.firstName, user.lastName].join(" ")}]);
-
+      setSupervisors([{ _id: user._id, name: [user.firstName, user.lastName].join(" ") }]);
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -71,22 +71,27 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findAllPhdStudents();
-      if (response.data) {
-        const filteredData = response.data.filter((st) => {
-          if (st.coSupervisor === null) {
-            return st.supervisor._id.localeCompare(user._id) === 0;
-          } else {
-            return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
-          }
-        });
-        const filteredPhdStudents = filteredData.map((st) => ({
-          ...st,
-          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
-          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
-          cotutelle: st.cotutelle ? "oui" : "non",
-        }));
+      if (response.status === 200) {
+        if (response.data.length === 0) {
+          setIsEmpty(true);
+        } else {
+          const filteredData = response.data.filter((st) => {
+            if (st.coSupervisor === null) {
+              return st.supervisor._id.localeCompare(user._id) === 0;
+            } else {
+              return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
+            }
+          });
+          const filteredPhdStudents = filteredData.map((st) => ({
+            ...st,
+            coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+            supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+            cotutelle: st.cotutelle ? "oui" : "non",
+          }));
 
-        setPhdStudents(filteredPhdStudents);
+          setPhdStudents(filteredPhdStudents);
+          setIsEmpty(false);
+        }
       } else throw Error();
     } catch (error) {
       pushAlert({
@@ -105,12 +110,14 @@ const PhdPage = () => {
 
   const addPhdStudent = async () => {
     try {
-      let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
-     console.log("STUDENT",student)
-      const response = await phdStudentService.createPhdStudent(student);
-      if (response.data) {
-        updatePhdStudentData();
-        clearInputs();
+      if (inputs.supervisor_id !== null) {
+        let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
+        console.log("STUDENT", student);
+        const response = await phdStudentService.createPhdStudent(student);
+        if (response.data) {
+          updatePhdStudentData();
+          clearInputs();
+        }
       } else throw Error();
     } catch (error) {
       pushAlert({ message: "Incapable de créer le doctorant" });
@@ -174,24 +181,27 @@ const PhdPage = () => {
       </div>
       <div className="row row-cards row-deck">
         <div className="col-md-12">
-          <CRUDTable
-            columns={columns}
-            data={phdStudents}
-            tableSkeleton={inputsSkeleton}
-            actions={[
-              { name: "Gérer", function: managePhdStudent, style: "primary" },
-              { name: "Modifier", function: editPhdStudent, style: "primary" },
-              {
-                name: "Supprimer",
-                function: deletePhdStudent,
-                style: "danger",
-              },
-            ]}
-          />
+          {isEmpty ? (
+            <p className="empty-title h3">Vous avez aucun(e) doctorant(e)</p>
+          ) : (
+            <CRUDTable
+              columns={columns}
+              data={phdStudents}
+              tableSkeleton={inputsSkeleton}
+              actions={[
+                { name: "Gérer", function: managePhdStudent, style: "primary" },
+                { name: "Modifier", function: editPhdStudent, style: "primary" },
+                {
+                  name: "Supprimer",
+                  function: deletePhdStudent,
+                  style: "danger",
+                },
+              ]}
+            />
+          )}
         </div>
         <div className="col-md-12">
           <CRUDForm
-         
             {...{
               inputs,
               setInputs,
@@ -199,7 +209,7 @@ const PhdPage = () => {
               handleSubmit,
               cancelEdit,
               action,
-              twoColumns:"form"
+              twoColumns: "form",
             }}
           />
         </div>
