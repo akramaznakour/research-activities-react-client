@@ -51,7 +51,7 @@ const CRUDForm = ({ inputs, setInputs, inputsSkeleton, handleSubmit, cancelEdit,
 
                       <fieldset>
                         <div className="some-class">
-                          <input type="radio" className="radio" onChange={handleInputsChange} name={input.name} value={false}  />
+                          <input type="radio" className="radio" onChange={handleInputsChange} name={input.name} value={false} checked  />
                           <label >Non </label>
                           <input type="radio" className="radio" onChange={handleInputsChange} name={input.name} value={true} />
                           <label >Oui</label>
