@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   body: {
@@ -126,7 +120,7 @@ const AuthorReport = ({ author }) => {
               <View style={{ ...styles.tableCol, width: "80%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
                 <Text style={{ ...styles.tableCell, color: "gray" }}>
-                    {publication.authors.join(", ")}
+                  {publication.authors.join(", ")}
                 </Text>
                 <Text style={{ ...styles.tableCell, color: "gray" }}>
                   {publication.source ? publication.source : ""}
@@ -139,13 +133,13 @@ const AuthorReport = ({ author }) => {
                   publication.extraInformation["Journal"]
                     ? publication.extraInformation["Journal"]
                     : ""}
-                  </Text>
+                </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                  <Text style={styles.tableCell}>{publication.year} </Text>
+                <Text style={styles.tableCell}>{publication.year} </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                  <Text style={styles.tableCell}>{publication.citation} </Text>
+                <Text style={styles.tableCell}>{publication.citation} </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.SJR ?? ""}</Text>
