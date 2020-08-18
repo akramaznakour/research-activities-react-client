@@ -7,10 +7,7 @@ const CRUDForm = ({ inputs, setInputs, inputsSkeleton, handleSubmit, cancelEdit,
       ...inputs,
       [event.target.name]: event.target.value,
     }));
-
-
   };
-
 
   useEffect(() => {
     inputsSkeleton.forEach((input) => {
@@ -51,9 +48,15 @@ const CRUDForm = ({ inputs, setInputs, inputsSkeleton, handleSubmit, cancelEdit,
                     <div className="form-group mt-2">
                       <label className="form-label">{input.label}</label>
                       {/* <input required type="radio" className="form-control" onChange={handleInputsChange} value={inputs[input.name] || ""} name={input.name} /> */}
-                      <div className="radio"><label> <input type="radio"  onChange={handleInputsChange} name={input.name} value={false}   /> non </label></div>
-                      <div className="radio"><label> <input type="radio"  onChange={handleInputsChange} name={input.name} value={true}  /> oui </label></div>
 
+                      <fieldset>
+                        <div className="some-class">
+                          <input type="radio" className="radio" onChange={handleInputsChange} name={input.name} value={false} checked  />
+                          <label >Non </label>
+                          <input type="radio" className="radio" onChange={handleInputsChange} name={input.name} value={true} />
+                          <label >Oui</label>
+                        </div>
+                      </fieldset>
                     </div>
                   )}
 

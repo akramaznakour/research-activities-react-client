@@ -4,6 +4,7 @@ import "datatables";
 
 const CRUDTable = ({ columns, data, actions, tableSkeleton }) => {
   useEffect(() => {
+    console.log("Data",data)
     if (data.length) $(".datatable").DataTable();
   }, [data]);
 
