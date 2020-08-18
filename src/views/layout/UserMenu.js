@@ -15,9 +15,12 @@ const UserMenu = ({ user, UserHelper }) => (
           {user.firstName ? user.firstName : ""}{" "}
           {user.lastName ? user.lastName : ""}
         </div>
-        <div className="mt-1 small text-muted">
-          {UserHelper.userShortBio(user)}
+
+        {UserHelper.userShortBio(user).map((bio)=>(
+          <div className="mt-1 small text-muted">
+          {bio}
         </div>
+        ))}
       </div>
     </Link>
     <div className="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
