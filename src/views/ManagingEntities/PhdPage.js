@@ -57,14 +57,11 @@ const PhdPage = () => {
   const setSupervisorsAndCoSupervisors = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
-      let coSup = [{ _id: null,name:"Pas de co-directeur" }];
       let sup = [];
       response.data.forEach((researcher) => {
-        coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
         sup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
-
       });
-      setCoSupervisors(coSup);
+      setCoSupervisors([{ _id: null,name:"Pas de co-directeur" },...sup]);
       setSupervisors(sup);
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
@@ -74,16 +71,14 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findAllPhdStudents();
-
       if (response.data.length !== 0) {
-        const filteredData = response.data.filter((st) => {
+        const filteredPhdStudents = response.data.filter((st) => {
           if (st.coSupervisor === null) {
             return st.supervisor._id.localeCompare(user._id) === 0;
           } else {
             return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
           }
-        });
-        const filteredPhdStudents = filteredData.map((st) => ({
+        }).map((st) => ({
           ...st,
           coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
           supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
