@@ -24,7 +24,7 @@ const ProfileHeader = ({ profile }) => {
                       }}
                     />
                   }
-                  fileName={profile.firstName + " " + profile.lastName + ".pdf"}
+                  fileName={profile.name + ".pdf"}
                 >
                   {({ blob, url, loading, error }) =>
                     loading

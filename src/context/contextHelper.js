@@ -2,43 +2,28 @@ const userShortBio = ({
   laboratoriesHeaded,
   teamsHeaded,
   teamsMemberships,
-  establishmentsDirected,
   ...user
 }) => {
-  if (user.role === "CED_HEAD") return ["chef de CED"];
+  if (user.role === "CED_HEAD") return `chef de CED`;
 
-
-  const roles = [];
-  roles.push(laboratoriesHeaded
+  const laboratoriesHeadedString = laboratoriesHeaded
     .map(({ abbreviation }) => `chef de laboratoire ${abbreviation}`)
-    .join(" , "));
+    .join(" , ");
 
-  roles.push(teamsHeaded
+  const teamsHeadedString = teamsHeaded
     .map(({ abbreviation }) => `chef de l'équipe ${abbreviation}`)
-    .join(" , "));
+    .join(" , ");
 
-  /*roles.push(teamsMemberships
+  const teamsMembershipsString = teamsMemberships
     .map(({ abbreviation }) => `membre de l'équipe ${abbreviation}`)
-    .join(" , "));*/
+    .join(" , ");
 
-  roles.push(establishmentsDirected
-    .map(({ abbreviation }) => `Directeur de recherche de ${abbreviation}`)
-    .join(" , "));
- 
-  let shortBio = []
-  roles.forEach((role)=>{
-    if(role != "")
-      shortBio.push(role);
-  })
-
-  if(!shortBio.length)
-    shortBio = ["Chercheur"];
-
-  
-    return shortBio;
-  /*if (shortBio.length > 10) return shortBio;
-  else return "Chercheur";*/
-
+  const shortBio =
+    laboratoriesHeadedString +
+    " " +
+    (teamsHeadedString ?? teamsMembershipsString);
+  if (shortBio.length > 10) return shortBio;
+  else return "Chercheur";
 };
 
 const userHeadedLaboratories = ({ laboratoriesHeaded }) =>
