@@ -134,16 +134,12 @@ const AuthorReport = ({ author }) => {
             <View key={index} style={styles.tableRow}>
               <View style={{ ...styles.tableCol, width: "80%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
-                {publication.authors && (
-                  <Text style={{ ...styles.tableCell, color: "gray" }}>
+                <Text style={{ ...styles.tableCell, color: "gray" }}>
                     {publication.authors.join(", ")}
                   </Text>
-                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                {publication.year && (
                   <Text style={styles.tableCell}>{publication.year} </Text>
-                )}
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                   <Text style={styles.tableCell}>{publication.citation} </Text>
