@@ -33,6 +33,7 @@ import {
 } from "../views/components/icons";
 import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
+import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
 
 
 const allRoles = [
@@ -97,6 +98,7 @@ const entitiesPathsCategory = {
       roles: ["CED_HEAD", "CED_HEAD"],
       inMenu: false,
     },
+    
   ],
 };
 
@@ -158,7 +160,9 @@ const accountsManagementPathsCategory = {
       roles: ["CED_HEAD"],
       icon: TeamIcon,
       inMenu: true,
-    }
+    },
+    
+    
   ],
 };
 
@@ -191,10 +195,24 @@ const StatisticsPaths = {
       roles: ["CED_HEAD","CED_HEAD"],
       inMenu: true,
     },
+    
   ],
 };
 
-
+const budgetPath = {
+title: "Budget",
+  isDropdown: false,
+  routes: [
+    {
+  title: "Budget",
+  path: "/Budget",
+  component: LaboratoryBudget,
+  roles: ["LABORATORY_HEAD"],
+  icon: TeamIcon,
+  inMenu: true,
+    }
+  ]
+}
     
 
 
@@ -301,6 +319,7 @@ const menus = [
   researchDirectorPaths,
   phdStudentsPaths,
   StatisticsPaths,
+  budgetPath,
   errorPathsCategory,
   
 ];
@@ -314,6 +333,7 @@ const routes = [
   ...researchDirectorPaths.routes,
   ...phdStudentsPaths.routes,
   ...StatisticsPaths.routes,
+  ...budgetPath.routes,
   ...errorPathsCategory.routes,
 ];
 
