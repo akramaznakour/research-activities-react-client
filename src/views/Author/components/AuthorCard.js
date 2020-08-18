@@ -35,7 +35,7 @@ const ScopusCard = ({ author }) => (
         {[author.affiliation, author.city, author.territory]
           .join("@")
           .trim()
-          .substr(0,40)
+          .substr(0,30)
           .split("@")
           .filter((info) => info.length > 2)
           .map((info) => (
@@ -71,7 +71,7 @@ const ScholarCard = ({ author }) => (
         {author.interests
           .join("@")
           .trim()
-          .substr(0,40)
+          .substr(0,30)
           .split("@")
           .filter((interest) => interest.length > 2)
           .map((interest) => (
