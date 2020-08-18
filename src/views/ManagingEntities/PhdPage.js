@@ -14,12 +14,12 @@ const PhdPage = () => {
   const [phdStudents, setPhdStudents] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
-  const [isEmpty, setIsEmpty] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
 
-  const columns = ["Nom de doctorant", "Prénom de doctorant", "Intitulé de la Thèse", "Directeur de thèse", "Co-Directeur de thèse", "Cotutelle (CT) - Codirection (CD) -Non", "Année de 1 ère inscription", "Date de soutenance"];
+  const columns = ["Nom de doctorant", "Prénom de doctorant", "Intitulé de la Thèse", "Directeur de thèse", "Co-Directeur de thèse", "Cotutelle (CT) - Codirection (CD) ", "Année de 1 ère inscription", "Date de soutenance"];
 
   const inputsSkeleton = [
     { name: "lastName", label: columns[0], type: "input" },
@@ -62,7 +62,7 @@ const PhdPage = () => {
         coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
       setCoSupervisors(coSup);
-      setSupervisors([{ _id: user._id, name: [user.firstName, user.lastName].join(" ") }]);
+      setSupervisors(coSup);
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -71,24 +71,24 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findAllPhdStudents();
-      if (response.status === 200) {
-        if (response.data.length === 0) {
+
+      if (response.data.length !== 0) {
+        const filteredData = response.data.filter((st) => {
+          if (st.coSupervisor === null) {
+            return st.supervisor._id.localeCompare(user._id) === 0;
+          } else {
+            return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
+          }
+        });
+        const filteredPhdStudents = filteredData.map((st) => ({
+          ...st,
+          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+          cotutelle: st.cotutelle ? "oui" : "non",
+        }));
+        if (filteredPhdStudents.length === 0) {
           setIsEmpty(true);
         } else {
-          const filteredData = response.data.filter((st) => {
-            if (st.coSupervisor === null) {
-              return st.supervisor._id.localeCompare(user._id) === 0;
-            } else {
-              return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
-            }
-          });
-          const filteredPhdStudents = filteredData.map((st) => ({
-            ...st,
-            coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
-            supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
-            cotutelle: st.cotutelle ? "oui" : "non",
-          }));
-
           setPhdStudents(filteredPhdStudents);
           setIsEmpty(false);
         }
@@ -172,6 +172,7 @@ const PhdPage = () => {
     setSupervisorsAndCoSupervisors();
     updatePhdStudentData();
     clearInputs();
+    console.log(isEmpty);
   }, []);
 
   return (
