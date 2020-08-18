@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     margin: 12,
     fontSize: 14,
     textAlign: "justify",
-    fontFamily: "Times-Roman",
   },
   header: {
     fontSize: 12,
