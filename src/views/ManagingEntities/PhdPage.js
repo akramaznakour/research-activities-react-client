@@ -14,7 +14,9 @@ const PhdPage = () => {
   const [phdStudents, setPhdStudents] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
+
   const [isEmpty, setIsEmpty] = useState(true);
+
 
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
@@ -61,8 +63,10 @@ const PhdPage = () => {
       response.data.forEach((researcher) => {
         sup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
+
       setCoSupervisors([{ _id: null,name:"Pas de co-directeur" },...sup]);
       setSupervisors(sup);
+
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -71,6 +75,7 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findAllPhdStudents();
+
       if (response.data.length !== 0) {
         const filteredPhdStudents = response.data.filter((st) => {
           if (st.coSupervisor === null) {
@@ -87,6 +92,7 @@ const PhdPage = () => {
         if (filteredPhdStudents.length === 0) {
           setIsEmpty(true);
         } else {
+
           setPhdStudents(filteredPhdStudents);
           setIsEmpty(false);
         }
