@@ -57,12 +57,15 @@ const PhdPage = () => {
   const setSupervisorsAndCoSupervisors = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
-      let coSup = [{ _id: null }];
+      let coSup = [{ _id: null,name:"Pas de co-directeur" }];
+      let sup = [];
       response.data.forEach((researcher) => {
         coSup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
+        sup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
+
       });
       setCoSupervisors(coSup);
-      setSupervisors(coSup);
+      setSupervisors(sup);
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
