@@ -3,7 +3,6 @@ import {
   Page,
   Text,
   View,
-  Font,
   Document,
   StyleSheet,
 } from "@react-pdf/renderer";
@@ -128,6 +127,18 @@ const AuthorReport = ({ author }) => {
                 <Text style={styles.tableCell}>{publication.title}</Text>
                 <Text style={{ ...styles.tableCell, color: "gray" }}>
                     {publication.authors.join(", ")}
+                </Text>
+                <Text style={{ ...styles.tableCell, color: "gray" }}>
+                  {publication.source ? publication.source : ""}
+
+                  {publication.extraInformation &&
+                  publication.extraInformation["Conference"]
+                    ? publication.extraInformation["Conference"]
+                    : ""}
+                  {publication.extraInformation &&
+                  publication.extraInformation["Journal"]
+                    ? publication.extraInformation["Journal"]
+                    : ""}
                   </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
