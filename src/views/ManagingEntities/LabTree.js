@@ -26,7 +26,7 @@ const LabTree = () => {
     });
   }, [teamService, user.laboratoriesHeaded]);
 
-  useEffect(() => {
+  const updateNodes = useCallback(() => {
     let nodes = [{ id: 0, name: [user.firstName[0], user.lastName].join("."), title: `Chef de laboratoire ${UserHelper.userHeadedLaboratories(user)}`, img: "https://cdn.balkan.app/shared/empty-img-white.svg" }];
     if (teams.length > 0) {
       setIsLoading(true);
@@ -76,6 +76,7 @@ const LabTree = () => {
 
   useEffect(() => {
     updateTeamData();
+    updateNodes();
   }, [updateTeamData]);
 
   return (
