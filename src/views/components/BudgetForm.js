@@ -37,7 +37,8 @@ const BudgetForm = ({
       <form onSubmit={handleSubmit}>
         <div className="card-header">
           <h3 className="card-title">
-            Modifier le budget
+            Modifier le budget de l'année prochaine
+
           </h3>
         </div>
 
