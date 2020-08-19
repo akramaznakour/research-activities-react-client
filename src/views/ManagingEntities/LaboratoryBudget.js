@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, {
     Fragment,
     useEffect,
@@ -6,27 +6,41 @@ import React, {
     useContext,
     useCallback,
   } from "react";
+
   import { AppContext } from "../../context/AppContext";
-  import CRUDTable from "../components/CRUDTable";
-  import CRUDForm from "../components/CRUDForm";
   import PageHeader from "../components/PageHeader";
-  import { useHistory } from "react-router-dom";
-import BudgetForm from "../components/BudgetForm";
-  
+  import BudgetForm from "../components/BudgetForm";
+  import C3Chart from "react-c3js";
+import StatisticsTable from "../Statistics/components/StatisticsTable";
+import BudgetTable from "../Statistics/components/BudgetTable";
+
   const LaboratoryBudget = () => {
-    const history = useHistory();
   
     const { ApiServices, alertService, user, UserHelper } = useContext(AppContext);
     const { pushAlert } = alertService;
-    const { laboratoryService, establishmentService,  } = ApiServices;
+    const { laboratoryService, userService   } = ApiServices;
   
     const [laboratories, setLaboratories] = useState([{budget : 0}]);
-    const [establishments, setEstablishments] = useState([]);
   
     const [inputs, setInputs] = useState({});
     const [action, setAction] = useState("ADDING");
-  
+    const [chartVersion, setChartVersion] = useState(0);
+
+    const [chart, setChart] = useState({
+      data: {
+        unload: true,
+        x: "x",
+        type: "line",
+        columns: [],
+      },
+    });
     const columns = [ "budget"];
+    const [dateRange, setDateRange] = useState({
+      start: 2015,
+      end:new Date().getFullYear()+1,
+    });
+  
+
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
@@ -35,56 +49,65 @@ import BudgetForm from "../components/BudgetForm";
   
     const clearInputs = () => {
       setInputs((inputs) => ({
-        budget: 0,
+
+        budget: "",
       }));
     };
   
+    const updateLaboratoryData = useCallback(async () => {
+      let response = await laboratoryService.findAllLaboratories();
+     
+          response.data.map((laboratory) => {
+            if(laboratory.name === user.laboratoriesHeaded[0].name){
+              setLaboratories(laboratories=> laboratories.concat(laboratory))
+            }
+          })
+      ;
+    }, [laboratoryService,user.laboratoriesHeaded]);
+  
+
+       
     const updateLaboratoriesData = useCallback(() => {
       setLaboratories(user.laboratoriesHeaded);
     }, [user.laboratoriesHeaded]);
   
+
+    const updateChart = useCallback(() => {
+      let yearsRange = [];
+      let budget=laboratories[0].budget;
+     
+
+      for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
+  
+      const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
+      .concat([["x"].concat(yearsRange)]);
+      setChart(() => ({
+        data: {
+          x: "x",
+          type: "line",
+          columns,
+        }
+      }))
+      setChartVersion(chartVersion+1);
+    },[laboratories]);
+  
     
-  
-    const updateEstablishmentsData = useCallback(async () => {
-      try {
-        const response = await establishmentService.findAllEstablishments();
-        if (response.data) setEstablishments(response.data);
-        else throw Error();
-      } catch (error) {
-        pushAlert({
-          message: "Incapable d'obtenir les données des établissements",
-        });
-      }
-    }, []);
-  
-    useEffect(() => {
-      updateLaboratoriesData();
-      updateEstablishmentsData();
-      clearInputs();
-      
-    }, [updateEstablishmentsData, updateLaboratoriesData]);
-  
-    const editLaboratory = (laboratory) => {
-      setAction("EDITING");
-      setInputs((inputs) => ({
-        ...inputs,
-        ...laboratory,
-      }));
-    };
-  
-    const manageLaboratory = ({ _id }) => {
-      history.push(`/laboratory/${_id}`);
-    };
-  
+   
    
   
     const updateLaboratory = async (laboratory) => {
-      laboratory.budget=inputs.budget;
+      let year = new Date().getFullYear()+1;
+
+     console.log(year);
+     console.log(inputs.budget);
+     laboratory.budget[new Date().getFullYear()+1]=parseInt(inputs.budget);
+
       try {
-        const response = await laboratoryService.updateLaboratory({
-          ...laboratory,
-          ...inputs,
-        });
+        const response = await laboratoryService.updateLaboratory(
+         laboratory,
+         
+        );
+
   
         if (response.data) {
           setAction("ADDING");
@@ -98,7 +121,19 @@ import BudgetForm from "../components/BudgetForm";
       }
     };
   
+
+    useEffect(() => {
+      updateLaboratoriesData();
+      clearInputs();
+      updateChart();
+     
+    }, [ updateLaboratoriesData, updateChart]);
   
+    useEffect(() => {
+     console.log(laboratories[0].budget[2017]);
+      console.log(chart.data);
+    }, [ columns]);
+
     const handleSubmit = (event) => {
       event.preventDefault();
 
@@ -108,6 +143,9 @@ import BudgetForm from "../components/BudgetForm";
       });
       
       updateLaboratory(laboratories[0]);
+
+      updateLaboratoriesData();
+
     };
   
     const cancelEdit = () => {
@@ -122,23 +160,12 @@ import BudgetForm from "../components/BudgetForm";
            title={`Budget de votre laboratoire ${UserHelper.userHeadedLaboratories(
             user
           )}`}
-            subTitle={` Budget actuel ${laboratories[0].budget===undefined? 0:laboratories[0].budget} DH`}
+
+            subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}
           />
         </div>
-        <div className="row row-cards row-deck">
-         {/* <div className="col-md-8">
-            <CRUDTable
-              columns={columns}
-              data={laboratories}
-              tableSkeleton={inputsSkeleton}
-              actions={[
-              
-                { name: "Modifier budget", function: editLaboratory, style: "primary" },
-                
-              ]}
-            />
-          </div>*/}
-          <div className="col-md-8">
+        <div >
+
             <BudgetForm
               {...{
                 inputs,
@@ -150,7 +177,42 @@ import BudgetForm from "../components/BudgetForm";
               }}
             />
           </div>
-        </div>
+
+          <br/>
+          
+          <div className="table-responsive">
+          <div className="card">    
+                <BudgetTable
+                  labBudget={laboratories[0].budget}
+                  dateRange={dateRange}
+                />
+              </div>   
+            </div> 
+            <br/>  
+        <div className="card">        
+              <div
+                id="apexchartDatas28b504"
+                className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
+              >
+         
+                  <C3Chart
+                   key={chartVersion}
+                   data={chart.data}
+                   unloadBeforeLoad={true}
+                  title={{
+                    text: "Budget par année",
+                        }}
+                  legend={{
+         
+                   show: true,
+                        }}
+                      />
+                
+               
+              </div>
+            </div>
+          
+
       </Fragment>
     );
   };

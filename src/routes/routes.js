@@ -35,6 +35,9 @@ import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
 import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
 
+import EstablishmentBudget from "../views/ManagingEntities/EstablishmentBudget";
+
+
 
 const allRoles = [
   "CED_HEAD",
@@ -204,13 +207,23 @@ title: "Budget",
   isDropdown: false,
   routes: [
     {
-  title: "Budget",
-  path: "/Budget",
-  component: LaboratoryBudget,
-  roles: ["LABORATORY_HEAD"],
+
+      title: "Budget",
+      path: "/Budget",
+      component: LaboratoryBudget,
+     roles: ["LABORATORY_HEAD"],
   icon: TeamIcon,
   inMenu: true,
-    }
+    },
+    {
+      title: "Budget",
+      path: "/Budget-CED",
+      component: EstablishmentBudget,
+      roles: ["CED_HEAD","CED_HEAD"],
+      icon: TeamIcon,
+      inMenu: true,
+     }
+
   ]
 }
     
