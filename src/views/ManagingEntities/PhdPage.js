@@ -185,6 +185,22 @@ const PhdPage = () => {
         <PageHeader title={`Vos Doctorants Monsieur ${[user.firstName, user.lastName].join(" ")}`} subTitle={`${phdStudents.length} doctorant(s)`} />
       </div>
       <div className="row row-cards row-deck">
+       
+        <div className="col-md-12">
+          <CRUDForm
+            {...{
+              inputs,
+              setInputs,
+              inputsSkeleton,
+              handleSubmit,
+              cancelEdit,
+              action,
+              twoColumns: "form",
+              phdForm: true,
+              user:user
+            }}
+          />
+        </div>
         <div className="col-md-12">
           {isEmpty ? (
             <p className="empty-title h3">Vous avez aucun(e) doctorant(e)</p>
@@ -204,21 +220,6 @@ const PhdPage = () => {
               ]}
             />
           )}
-        </div>
-        <div className="col-md-12">
-          <CRUDForm
-            {...{
-              inputs,
-              setInputs,
-              inputsSkeleton,
-              handleSubmit,
-              cancelEdit,
-              action,
-              twoColumns: "form",
-              phdForm: true,
-              user:user
-            }}
-          />
         </div>
       </div>
     </Fragment>
