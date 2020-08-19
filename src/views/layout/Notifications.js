@@ -6,6 +6,8 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import { useHistory } from "react-router-dom";
+
 import { NotificationIcon } from "../components/icons";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
@@ -58,40 +60,55 @@ const Notifications = () => {
   }, []);
 
   const checkFollowedResearcher = useCallback(
-    async (user, index) => {
+    async (followedUser, index) => {
+      console.log(
+        "Checking new publication of :",
+        followedUser.firstName,
+        followedUser.lastName
+      );
+
       try {
-        const response = await scraperService.getAuthorData(user.scholarId);
-        const currentPublications = response.data.publications;
-        console.log("user:", user.lastName);
-        console.log("currentPublications.length", currentPublications.length);
-        console.log("user.publications.length", user.publications.length);
-        if (currentPublications.length > user.publications.length) {
-          // fin publication
-          console.log("notifyFolloweers");
-          const oldPublicationsShortTitles = user.publications.map(
-            ({ title }) => title.substr(0, 40)
-          );
-          console.log("oldPublicationsTitles", oldPublicationsShortTitles);
+        const response = await scraperService.getAuthorData(
+          followedUser.platform,
+          followedUser.authorId
+        );
 
-          const newPublications = currentPublications.filter(
-            ({ title }) =>
-              !oldPublicationsShortTitles.includes(title.substr(0, 40))
-          );
+        if (!response.data.author) throw new Error();
 
-          const responses = await Promise.all(
-            newPublications.map(
-              async ({ title }) =>
-                await notificationsService.notifyFolloweers({
-                  scholarId: user.scholarId,
-                  publication: title,
-                  followedUserId: user.user_id,
-                  currentPublications,
-                })
-            )
-          );
+        const scrapedPublications = response.data.author.publications;
 
-          console.log("responses", responses);
-        }
+        console.log("scrapedPublications : ", scrapedPublications.length);
+
+        const storedPublicationsTitles = followedUser.publications.map(
+          ({ title }) => title
+        );
+
+        console.log(
+          "storedPublicationsTitles : ",
+          storedPublicationsTitles.length
+        );
+
+        const newPublications = scrapedPublications.filter(
+          ({ title }) => !storedPublicationsTitles.includes(title)
+        );
+
+        console.log(
+          "%cNew publications of %s",
+          "color: #8a6d3b;background-color: #fcf8e3;",
+          `${followedUser.firstName} ${followedUser.lastName} : ${newPublications.length}`
+        );
+
+        const responses = await Promise.all(
+          newPublications.map(
+            async ({ title }) =>
+              await notificationsService.notifyFolloweers({
+                authorId: followedUser.authorId,
+                publication: title,
+                followedUserId: followedUser.user_id,
+                scrapedPublications,
+              })
+          )
+        );
       } catch (error) {
         pushAlert({
           message:
@@ -107,10 +124,11 @@ const Notifications = () => {
   );
 
   const checkAllFollowedResearcher = useCallback(() => {
+    if (followedUsers.length === 0) return;
     followedUsers.forEach((followedUser, index) => {
       setTimeout(async () => {
         checkFollowedResearcher(followedUser, index);
-      }, 1000 * index);
+      }, 10000 * index);
     });
   }, [checkFollowedResearcher, followedUsers]);
 
@@ -184,31 +202,48 @@ const Notifications = () => {
 };
 export default Notifications;
 
-const Notification = ({ notification, markAsRead }) => (
-  <div
-    className="toast show"
-    role="alert"
-    aria-live="assertive"
-    aria-atomic="true"
-    data-autohide="false"
-    data-toggle="toast"
-  >
-    <Link to={"/author/" + notification.scholarId} onClick={() => markAsRead()}>
-      <div className="toast-header">
-        {notification.profilePicture && (
-          <span
-            className="avatar avatar-sm mr-2"
-            style={{
-              backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
-            }}
-          ></span>
-        )}
+const Notification = ({ notification, markAsRead }) => {
+  const history = useHistory();
 
-        <strong className="mr-auto">{notification.fullName}</strong>
-      </div>
-      <div className="toast-body">
-        {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
-      </div>
-    </Link>
-  </div>
-);
+  const { alertService } = useContext(AppContext);
+  const { pushAlert } = alertService;
+  return (
+    <div
+      className="toast show"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      data-autohide="false"
+      data-toggle="toast"
+    >
+      <Link
+        onClick={(e) => {
+          e.preventDefault();
+          history.push("/author/" + notification.authorId);
+          pushAlert({
+            type: "info",
+            autoClose: false,
+            message: "Nouvelle publication : " + notification.publication,
+          });
+          markAsRead();
+        }}
+      >
+        <div className="toast-header">
+          {notification.profilePicture && (
+            <span
+              className="avatar avatar-sm mr-2"
+              style={{
+                backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}/pictures/${notification.profilePicture})`,
+              }}
+            ></span>
+          )}
+
+          <strong className="mr-auto">{notification.fullName}</strong>
+        </div>
+        <div className="toast-body">
+          {`${notification.fullName} a publié une nouvelle publication intitulé : "${notification.publication}"`}
+        </div>
+      </Link>
+    </div>
+  );
+};

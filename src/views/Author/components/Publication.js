@@ -2,9 +2,14 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { AppContext } from "../../../context/AppContext";
 import Loader from "../../components/Loader";
-import PageNotFound from "../../components/PageNotFound";
 
-const Publication = ({ author, publication, updatePublication, index }) => {
+const Publication = ({
+  author,
+  publication,
+  updatePublication,
+  index,
+  platform,
+}) => {
   const { ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { scraperService } = ApiServices;
@@ -13,14 +18,30 @@ const Publication = ({ author, publication, updatePublication, index }) => {
   const [isFetched, setIsFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getPublicationData = useCallback(async () => {
+  const getJournalData = async () => {
     try {
       setIsLoading(true);
-      const response = await scraperService.getPublicationData(
-        author.scholarId,
-        publication.title
-      );
-      if (response.data.error) {
+
+      const jouranlName = publication.source
+        ? publication.source
+        : publication.extraInformation &&
+          publication.extraInformation["Journal"]
+        ? publication.extraInformation["Journal"]
+        : null;
+
+      console.log("jouranlName : ", jouranlName);
+
+      if (!jouranlName) {
+        updatePublication(index, {
+          ...publication,
+          searchedFor: true,
+        });
+        return;
+      }
+      const jouranlNameQuery = jouranlName.replace("/", "").replace("\\", "");
+
+      const response = await scraperService.getJournalData(jouranlNameQuery);
+      if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
           ...publication,
@@ -30,8 +51,8 @@ const Publication = ({ author, publication, updatePublication, index }) => {
         setIsFetched(true);
         updatePublication(index, {
           ...publication,
-          IF: response.data["Impact Factor"],
-          SJR: response.data["SJR"],
+          IF: response.data.journal["Impact Factor"],
+          SJR: response.data.journal["SJR"],
           searchedFor: true,
         });
       }
@@ -44,13 +65,13 @@ const Publication = ({ author, publication, updatePublication, index }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     let isMounted = true;
     if (!publication.IF && !publication.SJR && !publication.searchedFor)
       setTimeout(() => {
-        if (isMounted) getPublicationData();
+        if (isMounted) getJournalData();
       }, index * 2000);
 
     return () => {
@@ -61,33 +82,45 @@ const Publication = ({ author, publication, updatePublication, index }) => {
   const fetchedButton = (
     <button
       className="btn  btn-sm m-3 btn-outline-secondary "
-      onClick={getPublicationData}
+      onClick={getJournalData}
     >
       récupérer
     </button>
   );
   return (
     <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
-      <td>
+      <td style={{ width: "55%" }}>
         {publication.title}
-        <small className="d-block text-muted text-truncate mt-n1">
-          {publication.authors.join(", ")}
-        </small>
+        {publication.authors && (
+          <small className="d-block text-muted text-truncate mt-n1">
+            {publication.authors.join(", ")}
+          </small>
+        )}
+
+        {publication.source && (
+          <small className="d-block text-muted text-truncate mt-n1">
+            {publication.source}
+          </small>
+        )}
+
         {publication.extraInformation &&
           publication.extraInformation["Conference"] && (
             <small className="d-block text-muted text-truncate mt-n1">
-              Conference : {publication.extraInformation["Conference"]}
+              {publication.extraInformation["Conference"]}
             </small>
           )}
+
         {publication.extraInformation &&
           publication.extraInformation["Journal"] && (
             <small className="d-block text-muted text-truncate mt-n1">
-              Journal : {publication.extraInformation["Journal"]}
+              {publication.extraInformation["Journal"]}
             </small>
           )}
       </td>
-      <td className="text-center">{publication.year}</td>
-      <td className="text-center">{publication.citation.replace("*", "")}</td>
+      <td className="text-center">{publication.year ?? ""}</td>
+      <td className="text-center">
+        {publication.citation ? publication.citation.replace("*", "") : ""}
+      </td>
       <td className="text-center">
         {publication.IF ?? " "}
         {isLoading && <Loader size="25" />}

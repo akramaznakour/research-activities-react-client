@@ -1,0 +1,39 @@
+ul.form {
+    width: 100%;
+}
+ul.form li.form {
+    width: 49%;
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+ul.form li.form > * {
+    width: 100%;
+}
+
+ul.none {
+    list-style-type :none
+}
+fieldset {
+    overflow: hidden
+  }
+  
+  .some-class {
+    float: left;
+    clear: none;
+  }
+  
+  label {
+    float: left;
+    clear: none;
+    display: block;
+    padding: 0px 1em 0px 8px;
+  }
+  
+  input[type=radio],
+  input.radio {
+    float: left;
+    clear: none;
+    margin: 2px 0 0 2px;
+  }

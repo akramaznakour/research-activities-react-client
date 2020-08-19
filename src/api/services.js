@@ -5,11 +5,9 @@ const makeAuthentificationService = (api) => ({
 
 const makeScraperService = (api) => ({
   authorSearch: (authorName) => api.get(`/author-search/${authorName}`),
-  getAuthorData: (scholarId) => api.get(`/author/${scholarId}`),
-  getPublicationData: (scholarId, publicationName) =>
-    api.get(`/publication/${scholarId}/${publicationName}`),
-  getPublicationDetails: (scholarId, publicationName) =>
-    api.get(`/publication-details/${scholarId}/${publicationName}`),
+  getAuthorData: (platform, authorId) =>
+    api.get(`/author/${platform}/${authorId}`),
+  getJournalData: (jouranlName) => api.get(`/journal/${jouranlName}`),
 });
 
 const makeUserService = (api) => ({
@@ -26,12 +24,23 @@ const makeUserService = (api) => ({
   getResearchers: () => api.get(`/researchers`),
   followUser: (user) => api.post(`/follow`, user),
   updateFollowUser: (user) => api.post(`/update-followed-user`, user),
-  unfollowUser: (scholarId) => api.get(`/unfollow/${scholarId}`),
-  isFollowing: (scholarId) => api.get(`/is-following/${scholarId}`),
+  unfollowUser: (authorId) => api.get(`/unfollow/${authorId}`),
+  isFollowing: (authorId) => api.get(`/is-following/${authorId}`),
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
 });
+// const makePhdService = (api) => ({
+//   createUser: (user) => api.post(`/users`, user),
+//   updateUser: (user) => api.put(`/users`, user),
+//   findUser: (_id) => api.get(`/users/${_id}`),
+//   findAllUsers: () => api.get(`/users`),
+//   deleteUser: (_id) => api.delete(`/users/${_id}`),
+ 
+ 
+  
+  
+// });
 
 const makeUniversityService = (api) => ({
   createUniversity: (university) => api.post(`/universities`, university),
@@ -79,7 +88,14 @@ const makeTeamService = (api) => ({
   associateHeadToTeam: (team_id, head_id) =>
     api.get(`/team-head-association/${team_id}/${head_id}`),
 });
-
+const makePhdStudentsService = (api) => ({
+  createPhdStudent: (phdStudent) => api.post(`/phdStudents`, phdStudent),
+  updatePhdStudent: (phdStudent) => api.put(`/phdStudents`, phdStudent),
+  findAllPhdStudents: () => api.get(`/phdStudents`),
+  findstudent: (_id) => api.get(`/phdStudents/${_id}`),
+  deletePhdStudent: (_id) => api.delete(`/phdStudents/${_id}`),
+ 
+});
 const makeStatisticsService = (api) => ({
   getStatistics: (filter) => api.get(`/statistics`, { params: filter }),
 });
@@ -88,15 +104,15 @@ const makeNotificationsService = (api) => ({
   findUserNotifications: (user_id) => api.get(`/notifications/${user_id}`),
   notifyFolloweers: ({
     publication,
+    scrapedPublications,
     followedUserId,
-    scholarId,
-    currentPublications,
+    authorId,
   }) =>
     api.post(`/notify-followers`, {
       publication,
       followed_user_id: followedUserId,
-      scholar_id: scholarId,
-      current_publications: currentPublications,
+      author_id: authorId,
+      scraped_publications: scrapedPublications,
     }),
   markNotificationAsRead: (notificationId) =>
     api.post(`/mark-notification-as-read/${notificationId}`),
@@ -108,6 +124,7 @@ export {
   makeEstablishmentService,
   makeLaboratoryService,
   makeTeamService,
+  makePhdStudentsService,
   makeScraperService,
   makeAuthentificationService,
   makeStatisticsService,

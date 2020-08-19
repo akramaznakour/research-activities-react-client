@@ -1,12 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Page,
-  Text,
-  View,
-  Font,
-  Document,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   body: {
@@ -17,7 +10,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     textAlign: "center",
-    fontFamily: "Oswald",
   },
   author: {
     fontSize: 12,
@@ -27,13 +19,11 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 18,
     margin: 12,
-    fontFamily: "Oswald",
   },
   text: {
     margin: 12,
     fontSize: 14,
     textAlign: "justify",
-    fontFamily: "Times-Roman",
   },
   header: {
     fontSize: 12,
@@ -60,15 +50,9 @@ const styles = StyleSheet.create({
 
 // Create Document Component
 const AuthorReport = ({ author }) => {
-  Font.register({
-    family: "Oswald",
-    src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-  });
-
   useEffect(() => {
     console.log("should update");
-    
-  }, [author])
+  }, [author]);
 
   return (
     <Document
@@ -138,12 +122,24 @@ const AuthorReport = ({ author }) => {
                 <Text style={{ ...styles.tableCell, color: "gray" }}>
                   {publication.authors.join(", ")}
                 </Text>
+                <Text style={{ ...styles.tableCell, color: "gray" }}>
+                  {publication.source ? publication.source : ""}
+
+                  {publication.extraInformation &&
+                  publication.extraInformation["Conference"]
+                    ? publication.extraInformation["Conference"]
+                    : ""}
+                  {publication.extraInformation &&
+                  publication.extraInformation["Journal"]
+                    ? publication.extraInformation["Journal"]
+                    : ""}
+                </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.year} </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
-                <Text style={styles.tableCell}>{publication.citation}</Text>
+                <Text style={styles.tableCell}>{publication.citation} </Text>
               </View>
               <View style={{ ...styles.tableCol, width: "10%" }}>
                 <Text style={styles.tableCell}>{publication.SJR ?? ""}</Text>

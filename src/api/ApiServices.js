@@ -10,6 +10,7 @@ import {
   makeAuthentificationService,
   makeStatisticsService,
   makeNotificationsService,
+  makePhdStudentsService,
 } from "./services";
 
 const makeApiServices = ({ token, alertService }) => {
@@ -80,6 +81,7 @@ const makeApiServices = ({ token, alertService }) => {
     establishmentService: makeEstablishmentService(backendApi),
     laboratoryService: makeLaboratoryService(backendApi),
     teamService: makeTeamService(backendApi),
+    phdStudentService: makePhdStudentsService(backendApi),
     statisticsService: makeStatisticsService(backendApi),
     notificationsService: makeNotificationsService(backendApi),
   };
