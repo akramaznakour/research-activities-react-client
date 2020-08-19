@@ -19,7 +19,7 @@ const Team = () => {
 
   const updateData = useCallback(async () => {
     try {
-      const response = await userService.getResearchers();
+      const response = await userService.findAllUsers();
       if (response.data) setResearchers(response.data);
       else throw Error();
     } catch (error) {
