@@ -21,24 +21,25 @@ const PhdPage = () => {
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
 
-  const columns = ["Nom de doctorant", "Prénom de doctorant", "Intitulé de la Thèse", "Directeur de thèse", "Co-Directeur de thèse", "Cotutelle (CT) - Codirection (CD) ", "Année de 1 ère inscription", "Date de soutenance"];
+  const columns = ["Directeur de thèse", "Co-Directeur de thèse", "Nom de doctorant", "Prénom de doctorant", "Intitulé de la Thèse", "Cotutelle (CT) - Codirection (CD) ", "Année de 1 ère inscription", "Date de soutenance"];
 
   const inputsSkeleton = [
-    { name: "lastName", label: columns[0], type: "input" },
-    { name: "firstName", label: columns[1], type: "input" },
-    { name: "thesisTitle", label: columns[2], type: "input" },
     {
       name: "supervisor",
-      label: columns[3],
+      label: columns[0],
       type: "select",
       options: supervisors,
     },
     {
       name: "coSupervisor",
-      label: columns[4],
+      label: columns[1],
       type: "select",
       options: coSupervisors,
     },
+    { name: "lastName", label: columns[2], type: "input" },
+    { name: "firstName", label: columns[3], type: "input" },
+    { name: "thesisTitle", label: columns[4], type: "input" },
+
     { name: "cotutelle", label: columns[5], type: "radio" },
     { name: "start", label: columns[6], type: "input" },
     { name: "end", label: columns[7], type: "date" },
@@ -46,11 +47,11 @@ const PhdPage = () => {
 
   const clearInputs = () => {
     setInputs(() => ({
+      supervisor_id: "",
+      coSupervisor_id: "",
       firstName: "",
       lastName: "",
       thesisTitle: "",
-      supervisor_id: "",
-      coSupervisor_id: "",
       cotutelle: false,
       start: "",
       end: "",
@@ -63,9 +64,8 @@ const PhdPage = () => {
       response.data.forEach((researcher) => {
         sup.push({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") });
       });
-      setCoSupervisors([{ _id: null,name:"Pas de co-directeur" },...sup]);
+      setCoSupervisors([{ _id: null, name: "Pas de co-directeur" }, ...sup]);
       setSupervisors(sup);
-
     } catch (error) {
       pushAlert({ message: "Incapable d'obtenir des utilisateurs" });
     }
@@ -74,24 +74,24 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findAllPhdStudents();
-
       if (response.data.length !== 0) {
-        const filteredPhdStudents = response.data.filter((st) => {
-          if (st.coSupervisor === null) {
-            return st.supervisor._id.localeCompare(user._id) === 0;
-          } else {
-            return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
-          }
-        }).map((st) => ({
-          ...st,
-          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
-          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
-          cotutelle: st.cotutelle ? "oui" : "non",
-        }));
+        const filteredPhdStudents = response.data
+          .filter((st) => {
+            if (st.coSupervisor === null) {
+              return st.supervisor._id.localeCompare(user._id) === 0;
+            } else {
+              return st.supervisor._id.localeCompare(user._id) === 0 || st.coSupervisor._id.localeCompare(user._id) === 0;
+            }
+          })
+          .map((st) => ({
+            ...st,
+            coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+            supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+            cotutelle: st.cotutelle ? "oui" : "non",
+          }));
         if (filteredPhdStudents.length === 0) {
           setIsEmpty(true);
         } else {
-
           setPhdStudents(filteredPhdStudents);
           setIsEmpty(false);
         }
@@ -113,6 +113,7 @@ const PhdPage = () => {
 
   const addPhdStudent = async () => {
     try {
+      console.log("INPUTS",inputs)
       if (inputs.supervisor_id !== null) {
         let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
         console.log("STUDENT", student);
@@ -214,6 +215,8 @@ const PhdPage = () => {
               cancelEdit,
               action,
               twoColumns: "form",
+              phdForm: true,
+              user:user
             }}
           />
         </div>
