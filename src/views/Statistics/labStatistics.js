@@ -83,7 +83,14 @@ const LabStatistics = () => {
   
 
     const updateEstablishmentData = useCallback(async () => {
-      let response = await establishmentService.findAllEstablishments();
+
+      let response = null;
+      if(user.isDirector){
+        response = await establishmentService.getEstablishmentOfDirector(user._id);
+      }
+         
+      else
+         response = await establishmentService.findAllEstablishments();
       setEstablishments(
           response.data.map((establishment) => ({
             ...establishment,

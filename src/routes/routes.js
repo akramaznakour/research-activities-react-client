@@ -118,7 +118,15 @@ const researchDirectorPaths = {
       inMenu: true,
     },
     {
-      title: "Statistiques",
+      title: "Statistiques de laboratoires",
+      path: "/lab-statistics",
+      component: LabStatistics,
+      icon: StatisticsIcon,
+      roles: ["RESEARCH_DIRECTOR"],
+      inMenu: true,
+    },
+    {
+      title: "Statistiques d'équipes",
       path: "/statistics",
       component: Statistics,
       icon: StatisticsIcon,
