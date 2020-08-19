@@ -27,16 +27,18 @@ const LabTree = () => {
   }, [teamService, user.laboratoriesHeaded]);
 
   const updateNodes = useCallback(() => {
-    let nodes = [{ id: 0, name: [user.firstName[0], user.lastName].join("."), title: `Chef de laboratoire ${UserHelper.userHeadedLaboratories(user)}`, img: "https://cdn.balkan.app/shared/empty-img-white.svg" }];
+    let nodes = [{ id: 0, name: [user.firstName[0], user.lastName].join("."), title: `Chef de laboratoire ${UserHelper.userHeadedLaboratories(user)}`, img: user.profilePicture || "https://cdn.balkan.app/shared/empty-img-white.svg" }];
     if (teams.length > 0) {
       setIsLoading(true);
       (async function getHeadNames() {
         for (const team of teams) {
           let name;
+          let profilePicture;
           if (typeof team.head_id !== "undefined" || team.head_id === null) {
             let res = await userService.findUser(team.head_id);
             name = [res.data.firstName[0], res.data.lastName].join(".");
-            nodes.push({ id: team._id, name: team.name, pid: 0, tags: ["members-group", "group"] }, { id: team.head_id, stpid: team._id, pid: 0, name: name, title: "chef d'équipe", img: "https://cdn.balkan.app/shared/empty-img-white.svg" });
+            profilePicture = res.data.profilePicture; 
+            nodes.push({ id: team._id, name: team.name, pid: 0, tags: ["members-group", "group"] }, { id: team.head_id, stpid: team._id, pid: 0, name: name, title: "chef d'équipe", img: profilePicture || "https://cdn.balkan.app/shared/empty-img-white.svg" });
           } else {
             name = null;
           }
@@ -55,14 +57,15 @@ const LabTree = () => {
             console.log("RES,",res);
 
             let name = [res.data.firstName[0], res.data.lastName].join(".");
+            let profilePicture = res.data.profilePicture
             if (member.user_id !== team.head_id && typeof team.head_id !== "undefined") {
-              nodes.push({ id: member.user_id, stpid: team._id, pid: team.head_id, name: name, img: "https://cdn.balkan.app/shared/empty-img-white.svg" });
+              nodes.push({ id: member.user_id, stpid: team._id, pid: team.head_id, name: name, img: profilePicture || "https://cdn.balkan.app/shared/empty-img-white.svg" });
             }
             if (typeof team.head_id === "undefined" && member._id.localeCompare(team.teamMemberShip[0]._id) === 0) {
-              nodes.push({ id: team._id, name: team.name, pid: 0, tags: ["members-group", "group"] }, { id: member.user_id, stpid: team._id, pid: 0, name: name, img: "https://cdn.balkan.app/shared/empty-img-white.svg" });
+              nodes.push({ id: team._id, name: team.name, pid: 0, tags: ["members-group", "group"] }, { id: member.user_id, stpid: team._id, pid: 0, name: name, img: profilePicture || "https://cdn.balkan.app/shared/empty-img-white.svg" });
             }
             if (typeof team.head_id === "undefined" && member._id.localeCompare(team.teamMemberShip[0]._id) !== 0) {
-              nodes.push({ id: member.user_id, stpid: team._id, pid: team.teamMemberShip[0]._id, name: name, img: "https://cdn.balkan.app/shared/empty-img-white.svg" });
+              nodes.push({ id: member.user_id, stpid: team._id, pid: team.teamMemberShip[0]._id, name: name, img: profilePicture || "https://cdn.balkan.app/shared/empty-img-white.svg" });
             }
           }
         }
