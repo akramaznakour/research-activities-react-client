@@ -31,7 +31,7 @@ const Author = (props) => {
   const [users, setUsers] = useState([]);
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { scraperService, userService } = ApiServices;
+  const { scraperService, userService, teamService } = ApiServices;
 
   const getAuthorData = useCallback(async () => {
     try {
@@ -98,9 +98,9 @@ const Author = (props) => {
      async (author) => {
 
       if(user.role === "LABORATORY_HEAD") setIsAllowedToFollow(true);
+      let name = author.name.toLowerCase().split(" ");
       if(user.role == "RESEARCHER"){
         console.log(author);
-        let name = author.name.toLowerCase().split(" ");
         console.log("This is his name", name);
 
        const userName = {firstName: user.firstName.toLowerCase(), lastName: user.lastName.toLowerCase()};
@@ -109,6 +109,22 @@ const Author = (props) => {
             setIsAllowedToFollow(true)
         else
             setIsAllowedToFollow(false);
+      }
+
+      if(user.role === "TEAM_HEAD"){
+        const response = await teamService.findTeam(user.teamsHeaded[0]._id);
+        const team = response.data;
+        let teamMember = team.members.filter((member) => {
+          const memberName = {firstName: member.firstName.toLowerCase(), lastName: member.lastName.toLowerCase()};
+
+          return ((memberName.firstName == name[0] && memberName.lastName == name[1]) ||
+                  (memberName.firstName == name[1] && memberName.lastName == name[0]));
+        })
+
+        console.log(teamMember);
+        if(!teamMember.length)
+          setIsAllowedToFollow(false);
+        else setIsAllowedToFollow(true);
       }
     },
     []
