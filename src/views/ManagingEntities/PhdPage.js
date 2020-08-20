@@ -103,17 +103,37 @@ const PhdPage = () => {
     }
   }, [user]);
 
-  const editPhdStudent = (student) => {
+  const editPhdStudent = async (student) => {
+    const response = await phdStudentService.findstudent(student._id)
     setAction("EDITING");
     setInputs((inputs) => ({
       ...inputs,
       ...student,
+      coSupervisor_id:response.data.coSupervisor._id,
+      supervisor_id:response.data.supervisor._id
     }));
-  };
+    if(!response.data.coSupervisor._id.localeCompare(user._id)) {
+      let index = supervisors.findIndex(sup => !sup.name.localeCompare(student.supervisor))
+      let coIndex = coSupervisors.findIndex(sup => !sup.name.localeCompare([response.data.coSupervisor.firstName,response.data.coSupervisor.lastName].join(" ")))
+      document.getElementById('coSupervisor_id').selectedIndex = coIndex
+      document.getElementById('supervisor_id').selectedIndex = index
+      document.getElementById('coSup').checked = true
+      document.getElementById('Co-Directeur de thèse').style.visibility = 'hidden';
+      document.getElementById('Directeur de thèse').style.visibility = 'visible';
+      }
+      if(!response.data.supervisor._id.localeCompare(user._id)) {
+        let coIndex = coSupervisors.findIndex(sup => !sup.name.localeCompare(student.coSupervisor))
+        let index = supervisors.findIndex(sup => !sup.name.localeCompare([response.data.supervisor.firstName,response.data.supervisor.lastName].join(" ")))
+      document.getElementById('supervisor_id').selectedIndex = index
+        document.getElementById('coSupervisor_id').selectedIndex = coIndex
+        document.getElementById('sup').checked = true
+        document.getElementById('Co-Directeur de thèse').style.visibility = 'visible';
+        document.getElementById('Directeur de thèse').style.visibility = 'hidden';
+        } 
+       };
 
   const addPhdStudent = async () => {
     try {
-      console.log("INPUTS",inputs)
       if (inputs.supervisor_id !== null) {
         let student = { coSupervisor: inputs.coSupervisor_id, cotutelle: inputs.cotutelle, end: inputs.end, firstName: inputs.firstName, lastName: inputs.lastName, start: inputs.start, supervisor: inputs.supervisor_id, thesisTitle: inputs.thesisTitle };
         console.log("STUDENT", student);
@@ -130,7 +150,10 @@ const PhdPage = () => {
 
   const updatePhdStudent = async (student) => {
     try {
-      let newStudent = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
+      console.log('IN',inputs)
+      let newStudent = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("néant") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
+      console.log("New Student",newStudent)
+    
       const response = await phdStudentService.updatePhdStudent({
         ...student,
         ...newStudent,
