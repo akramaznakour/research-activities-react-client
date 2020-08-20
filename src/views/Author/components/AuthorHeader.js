@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import { CrossIcon, ConfirmationIcon } from "../../components/icons";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AuthorReport from "../AuthorReport";
+
+
+
 const AuthorHeader = ({
   platform,
   toggleFollow,
   isFollowed,
   isSendingFollow,
+  isAllowedToFollow,
   author,
   user,
   users,
@@ -23,7 +27,7 @@ const AuthorHeader = ({
             <div className="mb-2">
               <h4 className="m-0 ">
                 {author.name}
-                {user.role === "LABORATORY_HEAD" && (
+                {isAllowedToFollow && 
                   <FollowingButton
                     disabled={
                       author.publications.filter((p) => p.searchedFor)
@@ -31,9 +35,8 @@ const AuthorHeader = ({
                     }
                     isFollowed={isFollowed}
                     isSendingFollow={isSendingFollow}
-                  />
-                )}
-
+                  />}
+                  
                 <Fragment>
                   <PDFDownloadLink
                     className="btn  btn-sm m-1  btn-outline-primary"
