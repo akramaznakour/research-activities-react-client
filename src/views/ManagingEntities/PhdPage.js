@@ -106,16 +106,18 @@ const PhdPage = () => {
   const editPhdStudent = async (student) => {
     const response = await phdStudentService.findstudent(student._id)
     setAction("EDITING");
-    setInputs((inputs) => ({
+    let cosup;
+    cosup = student.coSupervisor.localeCompare("néant") === 0 ?  {_id:""} : response.data.coSupervisor
+    setInputs((inputs) => ({  
       ...inputs,
       ...student,
-      coSupervisor_id:response.data.coSupervisor._id,
-      supervisor_id:response.data.supervisor._id
+      coSupervisor_id:cosup ,
+      supervisor_id:response.data.supervisor._id 
     }));
-    if(!response.data.coSupervisor._id.localeCompare(user._id)) {
+    if(!cosup._id.localeCompare(user._id)) {
       let index = supervisors.findIndex(sup => !sup.name.localeCompare(student.supervisor))
-      let coIndex = coSupervisors.findIndex(sup => !sup.name.localeCompare([response.data.coSupervisor.firstName,response.data.coSupervisor.lastName].join(" ")))
-      document.getElementById('coSupervisor_id').selectedIndex = coIndex
+      let coIndex = coSupervisors.findIndex(sup => sup.name.localeCompare([cosup.firstName,response.data.coSupervisor.lastName].join(" ")))
+      coIndex === -1  ? document.getElementById('coSupervisor_id').selectedIndex = 0 :document.getElementById('coSupervisor_id').selectedIndex = coIndex
       document.getElementById('supervisor_id').selectedIndex = index
       document.getElementById('coSup').checked = true
       document.getElementById('Co-Directeur de thèse').style.visibility = 'hidden';
@@ -123,9 +125,11 @@ const PhdPage = () => {
       }
       if(!response.data.supervisor._id.localeCompare(user._id)) {
         let coIndex = coSupervisors.findIndex(sup => !sup.name.localeCompare(student.coSupervisor))
+        console.log("COINDEX",coIndex)
+
         let index = supervisors.findIndex(sup => !sup.name.localeCompare([response.data.supervisor.firstName,response.data.supervisor.lastName].join(" ")))
       document.getElementById('supervisor_id').selectedIndex = index
-        document.getElementById('coSupervisor_id').selectedIndex = coIndex
+      coIndex === -1  ? document.getElementById('coSupervisor_id').selectedIndex = 0 :document.getElementById('coSupervisor_id').selectedIndex = coIndex
         document.getElementById('sup').checked = true
         document.getElementById('Co-Directeur de thèse').style.visibility = 'visible';
         document.getElementById('Directeur de thèse').style.visibility = 'hidden';
