@@ -73,8 +73,9 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findStudentsOfUser();
+       const {students} = response.data
       if (response.data.length !== 0) {
-        const filteredPhdStudents = response.data
+        const filteredPhdStudents = students
           .map((st) => ({
             ...st,
             coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
