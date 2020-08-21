@@ -97,7 +97,7 @@ const Author = (props) => {
   const checkFollowAuthorisation = useCallback(
      async (author) => {
 
-      if(user.role === "LABORATORY_HEAD") setIsAllowedToFollow(true);
+      if(user.roles.includes("LABORATORY_HEAD")) setIsAllowedToFollow(true);
       let name = author.name.toLowerCase().split(" ");
       if(user.roles == "RESEARCHER"){
         console.log(author);
@@ -111,7 +111,7 @@ const Author = (props) => {
             setIsAllowedToFollow(false);
       }
 
-      if(user.role === "TEAM_HEAD"){
+      if(user.roles.includes("TEAM_HEAD")){
         const response = await teamService.findTeam(user.teamsHeaded[0]._id);
         const team = response.data;
         let teamMember = team.members.filter((member) => {

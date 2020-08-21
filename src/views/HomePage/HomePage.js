@@ -13,7 +13,7 @@ const HomePage = () => {
     <div className="row">
       <div
         className={`empty  text-center ${
-          user.role === "TEAM_HEAD" ? "col-md-6" : "col-md-12"
+          user.roles.includes("TEAM_HEAD")   ? "col-md-6" : "col-md-12"
         }`}
       >
         <div className="empty-icon">
@@ -32,7 +32,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {user.role === "TEAM_HEAD" && (
+      {user.roles.includes("TEAM_HEAD") && (
         <div className="empty col-md-6">
           <div className="empty-icon">
             <img src={image2} className="h-8 mb-4" alt="" />

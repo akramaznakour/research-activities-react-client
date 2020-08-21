@@ -15,7 +15,8 @@ const Route = ({ component: Component, roles, ...rest }) => {
 
         if (!user) return redirectTo("/login");
 
-        if (role && role.indexOf(user.role) === -1) return redirectTo("/");
+        if (roles && !user.roles.some((r) => roles.includes(r)))
+          return redirectTo("/");
 
         return <Component {...props} />;
       }}

@@ -41,9 +41,9 @@ const Notifications = () => {
   const getFollowedResearchers = useCallback(async () => {
     try {
       const filter =
-        user.role === "LABORATORY_HEAD"
+        user.roles.includes("LABORATORY_HEAD") 
           ? { laboratory_abbreviation: user.laboratoriesHeaded[0].abbreviation }
-          : user.role === "TEAM_HEAD"
+          : user.roles.includes("TEAM_HEAD")
           ? { team_abbreviation: user.teamsHeaded[0].abbreviation }
           : {};
       const response = await userService.getFollowedUsers(filter);

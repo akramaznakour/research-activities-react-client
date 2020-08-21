@@ -6,7 +6,7 @@ const getMenuForRole = (roles) =>
       ...menu,
       subMenus: menu.routes
         .filter((route) => route.inMenu)
-        .filter((route) => route.roles.indexOf(userRole) !== -1),
+        .filter((route) => route.roles.some((r) => roles.includes(r))),
     }))
     .filter((menu) => !menu.isDropdown || menu.subMenus.length > 0);
 

@@ -20,9 +20,9 @@ const NavBar = withRouter(({ history, location }) => {
         <AuthorSearchBar history={history} />
         <ul className="navbar-nav ml-auto">
           <li className="nav-item dropdown">
-            {["LABORATORY_HEAD", "TEAM_HEAD"].includes(user.role) && (
-              <Notifications />
-            )}
+            {["LABORATORY_HEAD", "TEAM_HEAD"].some((r) =>
+              user.roles.includes(r)
+            ) && <Notifications />}
           </li>
           <li className="nav-item dropdown pl-2">
             <UserMenu {...{ user, UserHelper }} />
