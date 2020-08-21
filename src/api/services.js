@@ -95,6 +95,7 @@ const makePhdStudentsService = (api) => ({
   findAllPhdStudents: () => api.get(`/phdStudents`),
   findstudent: (_id) => api.get(`/phdStudents/${_id}`),
   deletePhdStudent: (_id) => api.delete(`/phdStudents/${_id}`),
+  findStudentsOfUser: () => api.get(`/phdStudentsOfUser`)
  
 });
 const makeStatisticsService = (api) => ({
