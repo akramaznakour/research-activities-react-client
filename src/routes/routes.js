@@ -36,6 +36,7 @@ import LabStatistics from "../views/Statistics/labStatistics";
 import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
 
 import EstablishmentBudget from "../views/ManagingEntities/EstablishmentBudget";
+import AddBudget from "../views/components/AddBudget";
 
 
 
@@ -212,13 +213,23 @@ const StatisticsPaths = {
 
 const budgetPath = {
 title: "Budget",
-  isDropdown: false,
+  isDropdown: true,
+  icon : TeamIcon,
   routes: [
     {
 
       title: "Budget",
       path: "/Budget",
       component: LaboratoryBudget,
+     roles: ["LABORATORY_HEAD"],
+  icon: TeamIcon,
+  inMenu: true,
+    },
+    {
+
+      title: "Ajouter budget",
+      path: "/AddBudget",
+      component: AddBudget,
      roles: ["LABORATORY_HEAD"],
   icon: TeamIcon,
   inMenu: true,

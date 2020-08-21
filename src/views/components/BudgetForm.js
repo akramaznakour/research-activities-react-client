@@ -7,14 +7,16 @@ const BudgetForm = ({
   handleSubmit,
   cancelEdit,
   action,
+  title
 }) => {
   const handleInputsChange = (event) => {
     event.persist();
-
-    setInputs((inputs) => ({
-      ...inputs,
-      [event.target.name]: event.target.value,
-    }));
+    if  (Number(event.target.value))
+      { setInputs((inputs) => ({
+        ...inputs,
+        [event.target.name]:  parseInt(event.target.value),
+        }));
+      }
   };
 
   useEffect(() => {
@@ -28,7 +30,8 @@ const BudgetForm = ({
           ...inputs,
           [input.name + "_id"]: input.options[0]._id,
         }));
-        console.log("II",inputsSkeleton);
+       
+
     });
   }, [inputs, inputsSkeleton, setInputs]);
 
@@ -37,7 +40,7 @@ const BudgetForm = ({
       <form onSubmit={handleSubmit}>
         <div className="card-header">
           <h3 className="card-title">
-            Modifier le budget de l'année prochaine 
+              {title}          
           </h3>
         </div>
 
@@ -50,6 +53,7 @@ const BudgetForm = ({
                   <input
                     required
                     type="text"
+                    pattern="[0-9]*"
                     className="form-control"
                     onChange={handleInputsChange}
                     value={inputs[input.name]}
