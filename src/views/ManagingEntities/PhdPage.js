@@ -111,7 +111,7 @@ const PhdPage = () => {
     setInputs((inputs) => ({  
       ...inputs,
       ...student,
-      coSupervisor_id:cosup ,
+      coSupervisor_id:cosup._id,
       supervisor_id:response.data.supervisor._id 
     }));
     if(!cosup._id.localeCompare(user._id)) {
