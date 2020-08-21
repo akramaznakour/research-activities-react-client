@@ -99,7 +99,7 @@ const Author = (props) => {
 
       if(user.role === "LABORATORY_HEAD") setIsAllowedToFollow(true);
       let name = author.name.toLowerCase().split(" ");
-      if(user.role == "RESEARCHER"){
+      if(user.roles == "RESEARCHER"){
         console.log(author);
         console.log("This is his name", name);
 
@@ -134,7 +134,7 @@ const Author = (props) => {
   const allowedRoles = ["LABORATORY_HEAD", "TEAM_HEAD", "RESEARCHER"];
   useEffect(() => {
     getAuthorData();
-    if (allowedRoles.includes(user.role)) {
+    if (allowedRoles.includes(user.roles)) {
       getIfIsFollowing();
       findAllUsers();
     }

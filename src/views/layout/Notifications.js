@@ -210,7 +210,7 @@ const Notification = ({ notification, markAsRead }) => {
   return (
     <div
       className="toast show"
-      role="alert"
+      roles="alert"
       aria-live="assertive"
       aria-atomic="true"
       data-autohide="false"

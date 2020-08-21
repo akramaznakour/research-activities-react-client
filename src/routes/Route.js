@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Route as ReactRoute, Redirect } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 
-const Route = ({ component: Component, role, ...rest }) => {
+const Route = ({ component: Component, roles, ...rest }) => {
   let { user } = useContext(AppContext);
 
   return (

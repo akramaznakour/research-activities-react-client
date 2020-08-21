@@ -1,6 +1,6 @@
 import { menus } from "../../routes/routes";
 
-const getMenuForRole = (userRole) =>
+const getMenuForRole = (roles) =>
   menus
     .map((menu) => ({
       ...menu,
