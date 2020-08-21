@@ -5,6 +5,8 @@ import CRUDTable from "../components/CRUDTable";
 import CRUDForm from "../components/CRUDForm";
 import PageHeader from "../components/PageHeader";
 import { useHistory } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PhdStudentsReport from "./PhdStudentsReport";
 
 const PhdPage = () => {
   const history = useHistory();
@@ -15,8 +17,6 @@ const PhdPage = () => {
   const [supervisors, setSupervisors] = useState([]);
   const [coSupervisors, setCoSupervisors] = useState([]);
   const [isEmpty, setIsEmpty] = useState(true);
-
-
 
   const [inputs, setInputs] = useState({});
   const [action, setAction] = useState("ADDING");
@@ -60,9 +60,7 @@ const PhdPage = () => {
   const setSupervisorsAndCoSupervisors = useCallback(async () => {
     try {
       const response = await userService.findAllUsers();
-      let sup = response.data.reduce((acc,researcher)=>
-          acc.concat({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") })
-      ,[]); 
+      let sup = response.data.reduce((acc, researcher) => acc.concat({ _id: researcher._id, name: [researcher.firstName, researcher.lastName].join(" ") }), []);
       setCoSupervisors([{ _id: null, name: "Pas de co-directeur" }, ...sup]);
       setSupervisors(sup);
     } catch (error) {
@@ -73,15 +71,14 @@ const PhdPage = () => {
   const updatePhdStudentData = useCallback(async () => {
     try {
       const response = await phdStudentService.findStudentsOfUser();
-       const {students} = response.data
+      const { students } = response.data;
       if (response.data.length !== 0) {
-        const filteredPhdStudents = students
-          .map((st) => ({
-            ...st,
-            coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
-            supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
-            cotutelle: st.cotutelle ? "oui" : "non",
-          }));
+        const filteredPhdStudents = students.map((st) => ({
+          ...st,
+          coSupervisor: st.coSupervisor === null ? "néant" : [st.coSupervisor.firstName, st.coSupervisor.lastName].join(" "),
+          supervisor: [st.supervisor.firstName, st.supervisor.lastName].join(" "),
+          cotutelle: st.cotutelle ? "oui" : "non",
+        }));
         if (filteredPhdStudents.length === 0) {
           setIsEmpty(true);
         } else {
@@ -97,37 +94,37 @@ const PhdPage = () => {
   }, [user]);
 
   const editPhdStudent = async (student) => {
-    const response = await phdStudentService.findstudent(student._id)
+    const response = await phdStudentService.findstudent(student._id);
     setAction("EDITING");
     let cosup;
-    cosup = student.coSupervisor.localeCompare("néant") === 0 ?  {_id:""} : response.data.coSupervisor
-    setInputs((inputs) => ({  
+    cosup = student.coSupervisor.localeCompare("néant") === 0 ? { _id: "" } : response.data.coSupervisor;
+    setInputs((inputs) => ({
       ...inputs,
       ...student,
-      coSupervisor_id:cosup._id,
-      supervisor_id:response.data.supervisor._id 
+      coSupervisor_id: cosup._id,
+      supervisor_id: response.data.supervisor._id,
     }));
-    if(!cosup._id.localeCompare(user._id)) {
-      let index = supervisors.findIndex(sup => !sup.name.localeCompare(student.supervisor))
-      let coIndex = coSupervisors.findIndex(sup => sup.name.localeCompare([cosup.firstName,response.data.coSupervisor.lastName].join(" ")))
-      coIndex === -1  ? document.getElementById('coSupervisor_id').selectedIndex = 0 :document.getElementById('coSupervisor_id').selectedIndex = coIndex
-      document.getElementById('supervisor_id').selectedIndex = index
-      document.getElementById('coSup').checked = true
-      document.getElementById('Co-Directeur de thèse').style.visibility = 'hidden';
-      document.getElementById('Directeur de thèse').style.visibility = 'visible';
-      }
-      if(!response.data.supervisor._id.localeCompare(user._id)) {
-        let coIndex = coSupervisors.findIndex(sup => !sup.name.localeCompare(student.coSupervisor))
-        console.log("COINDEX",coIndex)
+    if (!cosup._id.localeCompare(user._id)) {
+      let index = supervisors.findIndex((sup) => !sup.name.localeCompare(student.supervisor));
+      let coIndex = coSupervisors.findIndex((sup) => sup.name.localeCompare([cosup.firstName, response.data.coSupervisor.lastName].join(" ")));
+      coIndex === -1 ? (document.getElementById("coSupervisor_id").selectedIndex = 0) : (document.getElementById("coSupervisor_id").selectedIndex = coIndex);
+      document.getElementById("supervisor_id").selectedIndex = index;
+      document.getElementById("coSup").checked = true;
+      document.getElementById("Co-Directeur de thèse").style.visibility = "hidden";
+      document.getElementById("Directeur de thèse").style.visibility = "visible";
+    }
+    if (!response.data.supervisor._id.localeCompare(user._id)) {
+      let coIndex = coSupervisors.findIndex((sup) => !sup.name.localeCompare(student.coSupervisor));
+      console.log("COINDEX", coIndex);
 
-        let index = supervisors.findIndex(sup => !sup.name.localeCompare([response.data.supervisor.firstName,response.data.supervisor.lastName].join(" ")))
-      document.getElementById('supervisor_id').selectedIndex = index
-      coIndex === -1  ? document.getElementById('coSupervisor_id').selectedIndex = 0 :document.getElementById('coSupervisor_id').selectedIndex = coIndex
-        document.getElementById('sup').checked = true
-        document.getElementById('Co-Directeur de thèse').style.visibility = 'visible';
-        document.getElementById('Directeur de thèse').style.visibility = 'hidden';
-        } 
-       };
+      let index = supervisors.findIndex((sup) => !sup.name.localeCompare([response.data.supervisor.firstName, response.data.supervisor.lastName].join(" ")));
+      document.getElementById("supervisor_id").selectedIndex = index;
+      coIndex === -1 ? (document.getElementById("coSupervisor_id").selectedIndex = 0) : (document.getElementById("coSupervisor_id").selectedIndex = coIndex);
+      document.getElementById("sup").checked = true;
+      document.getElementById("Co-Directeur de thèse").style.visibility = "visible";
+      document.getElementById("Directeur de thèse").style.visibility = "hidden";
+    }
+  };
 
   const addPhdStudent = async () => {
     try {
@@ -147,10 +144,10 @@ const PhdPage = () => {
 
   const updatePhdStudent = async (student) => {
     try {
-      console.log('IN',inputs)
+      console.log("IN", inputs);
       let newStudent = { ...inputs, cotutelle: inputs.cotutelle.localeCompare("non") === 0 ? false : true, coSupervisor: inputs.coSupervisor_id.localeCompare("néant") === 0 ? null : inputs.coSupervisor_id, supervisor: inputs.supervisor_id };
-      console.log("New Student",newStudent)
-    
+      console.log("New Student", newStudent);
+
       const response = await phdStudentService.updatePhdStudent({
         ...student,
         ...newStudent,
@@ -204,8 +201,15 @@ const PhdPage = () => {
       <div className="page-header">
         <PageHeader title={`Vos Doctorants Monsieur ${[user.firstName, user.lastName].join(" ")}`} subTitle={`${phdStudents.length} doctorant(s)`} />
       </div>
+      <div>
+        <Fragment>
+          <PDFDownloadLink className="btn  btn-sm m-1  btn-outline-primary" document={<PhdStudentsReport students={phdStudents} user={user} />} fileName={`les doctorants de ${[user.firstName, user.lastName].join(" ")}`}>
+            {({ blob, url, loading, error }) => (loading ? "Chargement du document..." : "Imprimer le rapport")}
+          </PDFDownloadLink>
+        </Fragment>
+      </div>
+
       <div className="row row-cards row-deck">
-       
         <div className="col-md-12">
           <CRUDForm
             {...{
@@ -217,7 +221,7 @@ const PhdPage = () => {
               action,
               twoColumns: "form",
               phdForm: true,
-              user:user
+              user: user,
             }}
           />
         </div>
@@ -241,7 +245,6 @@ const PhdPage = () => {
             />
           )}
         </div>
-        
       </div>
     </Fragment>
   );
