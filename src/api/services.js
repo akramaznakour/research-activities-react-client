@@ -73,7 +73,8 @@ const makeLaboratoryService = (api) => ({
   getFreeLaboratories: () => api.get(`/free-laboratories`),
   associateHeadToLaboratory: (head_id, lab_id) =>
     api.get(`/entitle-laboratory/${head_id}/${lab_id}`),
-  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`)
+  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`),
+  getNodesForOrgChart: () => api.get(`/nodesForOrgChart`)
 });
 
 const makeTeamService = (api) => ({
