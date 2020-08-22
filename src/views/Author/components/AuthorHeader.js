@@ -140,13 +140,13 @@ const ConfirmationModel = ({ isFollowed, toggleFollow, users }) => {
       className="modal modal-blur fade show"
       id="modal-info"
       tabindex="-1"
-      role="dialog"
+      roles="dialog"
       style={{ display: " none", "padding-right": "17px" }}
       aria-modal="true"
     >
       <div
         className="modal-dialog modal-sm modal-dialog-centered"
-        role="document"
+        roles="document"
       >
         <div className="modal-content">
           <button

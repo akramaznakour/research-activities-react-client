@@ -232,7 +232,8 @@ const TeamBox = ({
                     {team.head_id === member._id && (
                       <span className="badge bg-primary">Chef d'équipe</span>
                     )}
-                    {team.head_id !== member._id && user.role !== "TEAM_HEAD" && (
+                    {team.head_id !== member._id &&
+                      user.roles.includes("LABORATORY_HEAD") && (
                       <button
                         onClick={(e) => {
                           e.preventDefault();

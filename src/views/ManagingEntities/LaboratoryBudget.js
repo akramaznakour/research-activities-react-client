@@ -35,7 +35,7 @@ import AddBudget from "../components/AddBudget";
         columns: [],
       },
     });
-    const columns = [ "budget"];
+    const columns = [ "budget", "year"];
     const [dateRange, setDateRange] = useState({
       start: 2015,
       end:new Date().getFullYear()+1,
@@ -45,13 +45,19 @@ import AddBudget from "../components/AddBudget";
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
-    
+      {
+        name: "year",
+        label: columns[1],
+        type: "select",
+        options: [2015,2016,2017,2018,2019,2020],
+      },
     ];
   
     const clearInputs = () => {
       setInputs((inputs) => ({
 
         budget: "",
+        
       }));
     };
     const updateLaboratoriesData = useCallback(async () => {
@@ -109,8 +115,9 @@ import AddBudget from "../components/AddBudget";
 
      console.log(year);
      console.log(inputs.budget);
-     laboratory.budget[new Date().getFullYear()+1]=parseInt(inputs.budget);
-
+     console.log(inputs.year);
+     laboratory.budget[inputs.year]=parseInt(inputs.budget);
+     
       try {
         const response = await laboratoryService.updateLaboratory(
          laboratory,

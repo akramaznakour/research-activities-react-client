@@ -143,7 +143,7 @@ const Laboratory = () => {
           )}
         </div>
 
-        {user.role == "CED_HEAD" && (
+        {user.roles == "CED_HEAD" && (
           <div className="col-md-4">
           {laboratory != null && (
             <div className="card">

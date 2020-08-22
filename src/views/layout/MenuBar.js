@@ -7,7 +7,7 @@ import { AppContext } from "../../context/AppContext";
 const MenuBar = withRouter(({ history, location, ...props }) => {
   const { user } = useContext(AppContext);
 
-  let menus = getMenuForRole(user.role);
+  let menus = getMenuForRole(user.roles);
   if(user.isDirector)
     menus = [...menus, ...getMenuForRole("RESEARCH_DIRECTOR")];
  
@@ -70,7 +70,7 @@ const Dropdown = ({ menu, location }) => (
       }  `}
       href={"#navbar-extra"}
       data-toggle="dropdown"
-      role="button"
+      roles="button"
       aria-expanded="false"
     >
       <span className="nav-link-icon">

@@ -11,24 +11,28 @@ const BudgetForm = ({
 }) => {
   const handleInputsChange = (event) => {
     event.persist();
-    if  (Number(event.target.value))
-      { setInputs((inputs) => ({
+    if(Number.isInteger(parseInt(event.target.value)))
+       {setInputs((inputs) => ({
         ...inputs,
-        [event.target.name]:  parseInt(event.target.value),
+        [event.target.name]: parseInt(event.target.value),
         }));
-      }
+      
+        console.log("inputs",inputs);}
   };
 
   useEffect(() => {
+    console.log(inputsSkeleton);
+    console.log("inputs",inputs);
     inputsSkeleton.forEach((input) => {
+      console.log("undef",inputs[input.name]);
       if (
         input.type === "select" &&
         input.options.length &&
-        inputs[input.name + "_id"] === ""
+        inputs[input.name] === undefined
       )
         setInputs((inputs) => ({
           ...inputs,
-          [input.name + "_id"]: input.options[0]._id,
+          [input.name ]: 2015,
         }));
        
 
@@ -66,14 +70,14 @@ const BudgetForm = ({
                 <div className="form-group mt-2">
                   <label className="form-label">{input.label}</label>
                   <select
-                    name={input.name + "_id"}
+                    name={input.name }
                     onChange={handleInputsChange}
-                    value={inputs[input.name + "_id"]}
+                    value={inputs[input.name ]}
                     className="form-control"
                   >
                     {input.options.map((option, index) => (
-                      <option value={option._id}  key={index}>
-                        {option.name}
+                      <option value={option}  key={index}>
+                        {option}
                       </option>
                     ))}
                   </select>

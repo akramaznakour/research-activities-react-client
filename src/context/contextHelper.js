@@ -5,7 +5,7 @@ const userShortBio = ({
   establishmentsDirected,
   ...user
 }) => {
-  if (user.role === "CED_HEAD") return ["chef de CED"];
+  if (user.roles.includes("CED_HEAD")) return ["chef de CED"];
 
 
   const roles = [];

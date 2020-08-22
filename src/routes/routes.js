@@ -213,7 +213,7 @@ const StatisticsPaths = {
 
 const budgetPath = {
 title: "Budget",
-  isDropdown: true,
+  isDropdown: false,
   icon : TeamIcon,
   routes: [
     {
@@ -225,15 +225,7 @@ title: "Budget",
   icon: TeamIcon,
   inMenu: true,
     },
-    {
-
-      title: "Ajouter budget",
-      path: "/AddBudget",
-      component: AddBudget,
-     roles: ["LABORATORY_HEAD"],
-  icon: TeamIcon,
-  inMenu: true,
-    },
+  
     {
       title: "Budget",
       path: "/Budget-CED",
