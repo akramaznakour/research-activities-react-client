@@ -26,11 +26,12 @@ const Author = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [noResultFound, setNoResultFound] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
+  const [isAllowedToFollow, setIsAllowedToFollow] = useState(null); 
   const [isSendingFollow, setsSendingFollow] = useState(false);
   const [users, setUsers] = useState([]);
   const { user, ApiServices, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
-  const { scraperService, userService } = ApiServices;
+  const { scraperService, userService, teamService } = ApiServices;
 
   const getAuthorData = useCallback(async () => {
     try {
@@ -39,7 +40,10 @@ const Author = (props) => {
       if (isError) setIsError(false);
       if (noResultFound) setNoResultFound(false);
       const response = await scraperService.getAuthorData(platform, authorId);
-      if (response.data.author) setAuthor(response.data.author);
+      if (response.data.author) {
+        setAuthor(response.data.author);
+        checkFollowAuthorisation(response.data.author);
+      } 
       else if (response.data.error) setNoResultFound(true);
       else {
         pushAlert({ message: "Incapable d'obtenir les données de l'auteur" });
@@ -90,13 +94,50 @@ const Author = (props) => {
     [authorId, author]
   );
 
+  const checkFollowAuthorisation = useCallback(
+     async (author) => {
+
+      if(user.roles.includes("LABORATORY_HEAD")) setIsAllowedToFollow(true);
+      let name = author.name.toLowerCase().split(" ");
+      if(user.roles.includes("RESEARCHER")){
+
+       const userName = {firstName: user.firstName.toLowerCase(), lastName: user.lastName.toLowerCase()};
+        if((userName.firstName == name[0] && userName.lastName == name[1]) ||
+            (userName.firstName == name[1] && userName.lastName == name[0]))
+            setIsAllowedToFollow(true)
+        else
+            setIsAllowedToFollow(false);
+      }
+
+      if(user.roles.includes("TEAM_HEAD")){
+        const response = await teamService.findTeam(user.teamsHeaded[0]._id);
+        const team = response.data;
+        let teamMember = team.members.filter((member) => {
+          const memberName = {firstName: member.firstName.toLowerCase(), lastName: member.lastName.toLowerCase()};
+
+          return ((memberName.firstName == name[0] && memberName.lastName == name[1]) ||
+                  (memberName.firstName == name[1] && memberName.lastName == name[0]));
+        })
+
+        console.log(teamMember);
+        if(!teamMember.length)
+          setIsAllowedToFollow(false);
+        else setIsAllowedToFollow(true);
+      }
+    },
+    []
+  );
+
+
+  const allowedRoles = ["LABORATORY_HEAD", "TEAM_HEAD", "RESEARCHER"];
   useEffect(() => {
     getAuthorData();
-    if (user.role === "LABORATORY_HEAD") {
+    if (allowedRoles.some((r) => user.roles.includes(r))) {
       getIfIsFollowing();
       findAllUsers();
     }
   }, []);
+
 
   return (
     <div className="row">
@@ -114,6 +155,7 @@ const Author = (props) => {
               toggleFollow={toggleFollow}
               isFollowed={isFollowed}
               isSendingFollow={isSendingFollow}
+              isAllowedToFollow={isAllowedToFollow}
             />
             <Publications
               platform={platform}

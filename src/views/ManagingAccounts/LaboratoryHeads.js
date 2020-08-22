@@ -43,7 +43,7 @@ const LaboratoryHeads = (props) => {
       const response = await userService.createUser({
         email: newEmail,
         password,
-        role: "LABORATORY_HEAD",
+        roles: "LABORATORY_HEAD",
         creatorId: user._id,
       });
       if (response.data) updateData();

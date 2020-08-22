@@ -13,6 +13,7 @@ import React, {
   import C3Chart from "react-c3js";
 import StatisticsTable from "../Statistics/components/StatisticsTable";
 import BudgetTable from "../Statistics/components/BudgetTable";
+import AddBudget from "../components/AddBudget";
 
   const LaboratoryBudget = () => {
   
@@ -20,7 +21,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
     const { pushAlert } = alertService;
     const { laboratoryService, userService   } = ApiServices;
   
-    const [laboratories, setLaboratories] = useState([{budget : 0}]);
+    const [laboratories, setLaboratories] = useState([{title : "t"}]);
   
     const [inputs, setInputs] = useState({});
     const [action, setAction] = useState("ADDING");
@@ -34,47 +35,61 @@ import BudgetTable from "../Statistics/components/BudgetTable";
         columns: [],
       },
     });
-    const columns = [ "budget"];
+    const columns = [ "budget", "year"];
     const [dateRange, setDateRange] = useState({
       start: 2015,
       end:new Date().getFullYear()+1,
     });
   
-
+    const title = "Ajouter budget de l'année prochaine"
   
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
-    
+      {
+        name: "year",
+        label: columns[1],
+        type: "select",
+        options: [2015,2016,2017,2018,2019,2020],
+      },
     ];
   
     const clearInputs = () => {
       setInputs((inputs) => ({
 
         budget: "",
+        
       }));
     };
-  
-    const updateLaboratoryData = useCallback(async () => {
+    const updateLaboratoriesData = useCallback(async () => {
       let response = await laboratoryService.findAllLaboratories();
-     
+      let newlabs =[];
+          if(response.data){
           response.data.map((laboratory) => {
+       
             if(laboratory.name === user.laboratoriesHeaded[0].name){
-              setLaboratories(laboratories=> laboratories.concat(laboratory))
+             newlabs.push(laboratory);
+            
+              setLaboratories(newlabs);
+              console.log(laboratories);
             }
-          })
+          })}
       ;
-    }, [laboratoryService,user.laboratoriesHeaded]);
+    }, [laboratoryService]);
   
 
        
-    const updateLaboratoriesData = useCallback(() => {
+  
+       
+    const updateLaboratoryData = useCallback(() => {
       setLaboratories(user.laboratoriesHeaded);
     }, [user.laboratoriesHeaded]);
   
 
     const updateChart = useCallback(() => {
       let yearsRange = [];
-      let budget=laboratories[0].budget;
+      let budget ={2015 : 0}
+      if(laboratories[0].budget!== undefined)
+      {budget = laboratories[0].budget;}
      
 
       for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
@@ -100,8 +115,9 @@ import BudgetTable from "../Statistics/components/BudgetTable";
 
      console.log(year);
      console.log(inputs.budget);
-     laboratory.budget[new Date().getFullYear()+1]=parseInt(inputs.budget);
-
+     console.log(inputs.year);
+     laboratory.budget[inputs.year]=parseInt(inputs.budget);
+     
       try {
         const response = await laboratoryService.updateLaboratory(
          laboratory,
@@ -123,24 +139,32 @@ import BudgetTable from "../Statistics/components/BudgetTable";
   
 
     useEffect(() => {
-      updateLaboratoriesData();
+      if(laboratories.length !==0){
+      
       clearInputs();
       updateChart();
-     
+      }
     }, [ updateLaboratoriesData, updateChart]);
   
     useEffect(() => {
-     console.log(laboratories[0].budget[2017]);
-      console.log(chart.data);
-    }, [ columns]);
+      updateChart();
+    }, [ laboratories ]);
 
+    useEffect(() => {
+     
+      
+        updateLaboratoriesData();
+      
+    }, []);
+  
     const handleSubmit = (event) => {
       event.preventDefault();
 
-      console.log({
-        ...inputs,
-        ...laboratories[0],
-      });
+      console.log(
+       
+        laboratories[0],
+      
+      );
       
       updateLaboratory(laboratories[0]);
 
@@ -160,12 +184,11 @@ import BudgetTable from "../Statistics/components/BudgetTable";
            title={`Budget de votre laboratoire ${UserHelper.userHeadedLaboratories(
             user
           )}`}
-
-            subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}
+            /*subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}*/
           />
         </div>
         <div >
-
+         {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
             <BudgetForm
               {...{
                 inputs,
@@ -174,18 +197,20 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 handleSubmit,
                 cancelEdit,
                 action,
+                title
               }}
-            />
+            />}
           </div>
-
+        {laboratories[0].budget === undefined && <AddBudget/>}
           <br/>
           
           <div className="table-responsive">
           <div className="card">    
-                <BudgetTable
+          {(laboratories.length !==0 && laboratories[0].budget!== undefined)&& <BudgetTable
                   labBudget={laboratories[0].budget}
                   dateRange={dateRange}
                 />
+          }
               </div>   
             </div> 
             <br/>  
@@ -194,7 +219,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-         
+          {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
                   <C3Chart
                    key={chartVersion}
                    data={chart.data}
@@ -206,7 +231,7 @@ import BudgetTable from "../Statistics/components/BudgetTable";
          
                    show: true,
                         }}
-                      />
+                      />}
                 
                
               </div>

@@ -162,7 +162,9 @@ const EstablishmentBudget = () => {
 
     for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
 
-    const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
+    if(currentLab.budget!== undefined)
+    {const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
+
       .concat([["x"].concat(yearsRange)]);
 
     setChart(() => ({
@@ -173,7 +175,8 @@ const EstablishmentBudget = () => {
       }
     }))
     setChartVersion(chartVersion+1);
-}
+}}
+
   },[laboratories, currentLab]);
   
 
@@ -250,15 +253,19 @@ const EstablishmentBudget = () => {
           <div className="card">
             <div id="chartData-development-activity" className="mt-4">
                
-            {(selectedLabs.length !==0)&&
+
+            {(selectedLabs.length !==0 /*&& currentLab.budget!== undefined*/) &&
+
             
                 <BudgetTable
                   labBudget={currentLab.budget}
                   dateRange={dateRange}
                 />}
-                 {labsStatistics.length === 0 && (
+                 {(labsStatistics.length === 0 )&& (
                   <NoResultFound query={searchTerm} />
                 )}
+                
+
               </div>   
             </div>   
         <div className="card">        
@@ -266,7 +273,8 @@ const EstablishmentBudget = () => {
                 id="apexchartDatas28b504"
                 className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
               >
-         {(selectedLabs.length !==0)&&
+         {(selectedLabs.length !==0 && currentLab.budget!== undefined)&&
+
                   <C3Chart
                    key={chartVersion}
                    data={chart.data}

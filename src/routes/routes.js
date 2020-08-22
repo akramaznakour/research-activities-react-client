@@ -21,6 +21,7 @@ import LabTree from "../views/ManagingEntities/LabTree";
 import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
 import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
 import TeamOfDirector from "../views/ManagingEntities/DirectorViews/TeamOfDirector";
+import DirectorTeamsStatistics from "../views/Statistics/DirectorTeamsStatistics";
 
 
 import {
@@ -36,6 +37,7 @@ import LabStatistics from "../views/Statistics/labStatistics";
 import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
 
 import EstablishmentBudget from "../views/ManagingEntities/EstablishmentBudget";
+import AddBudget from "../views/components/AddBudget";
 
 
 
@@ -127,8 +129,8 @@ const researchDirectorPaths = {
     },
     {
       title: "Statistiques d'équipes",
-      path: "/statistics",
-      component: Statistics,
+      path: "/director-teams-statistics",
+      component: DirectorTeamsStatistics,
       icon: StatisticsIcon,
       roles: ["RESEARCH_DIRECTOR"],
       inMenu: true,
@@ -213,6 +215,7 @@ const StatisticsPaths = {
 const budgetPath = {
 title: "Budget",
   isDropdown: false,
+  icon : TeamIcon,
   routes: [
     {
 
@@ -223,6 +226,7 @@ title: "Budget",
   icon: TeamIcon,
   inMenu: true,
     },
+  
     {
       title: "Budget",
       path: "/Budget-CED",

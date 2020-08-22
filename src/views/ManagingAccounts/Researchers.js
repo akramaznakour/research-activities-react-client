@@ -44,7 +44,7 @@ const Researchers = () => {
       const response = await userService.createUser({
         email: newEmail,
         password,
-        role: "RESEARCHER",
+        roles: "RESEARCHER",
         creatorId: user._id,
       });
       if (response.data) updateData();

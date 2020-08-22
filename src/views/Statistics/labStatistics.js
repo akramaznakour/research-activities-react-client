@@ -90,7 +90,7 @@ const LabStatistics = () => {
       }
          
       else
-         response = await establishmentService.findAllEstablishments();
+        response = await establishmentService.findAllEstablishments();
       setEstablishments(
           response.data.map((establishment) => ({
             ...establishment,

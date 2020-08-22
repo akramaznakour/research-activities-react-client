@@ -95,7 +95,7 @@ const CRUDForm = ({ inputs, setInputs, inputsSkeleton, handleSubmit, cancelEdit,
                   )}
 
                   {input.type === "select" && (
-                    <div className="form-group mt-2" id={input.label}>
+                    <div style={{visibility: phdForm ? "hidden": "visible"}} className="form-group mt-2" id={input.label}>
                       <label className="form-label">{input.label}</label>
                       <select name={input.name + "_id"} onChange={handleInputsChange} value={inputs[input.name + "_id"] || ""} className="form-control" id={input.name + "_id"} >
                         {input.options.map((option, index) => (

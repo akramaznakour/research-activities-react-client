@@ -1,10 +1,11 @@
 import React from "react";
+import NoResultFound from "../../components/NoResultFound";
 
 const BudgetTable = ({ labBudget, dateRange }) => {
   let yearsRange = [];
   for (let i = dateRange.start; i <= dateRange.end; i++) yearsRange.push(i);
-
-  return (
+  if(labBudget !== undefined)
+  {return (
     <table className="table card-table table-vcenter">
       <thead>
         <tr>
@@ -27,7 +28,11 @@ const BudgetTable = ({ labBudget, dateRange }) => {
         
       </tbody>
     </table>
-  );
+  );}
+  else {
+    return ( <NoResultFound query={""}  />
+      )
+  }
 };
 
 export default BudgetTable;
