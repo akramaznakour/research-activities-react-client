@@ -29,6 +29,7 @@ const makeUserService = (api) => ({
   getFollowedUsers: (filter) => api.get(`/followed-users`, { params: filter }),
   getFilteringOptions: (laboratoryHeadId) =>
     api.get(`/filtering-options/${laboratoryHeadId}`),
+  getDirectorFilteringOptions: (directorId) => api.get(`/director-filtering-options/${directorId}`)
 });
 // const makePhdService = (api) => ({
 //   createUser: (user) => api.post(`/users`, user),
