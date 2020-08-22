@@ -99,9 +99,7 @@ const Author = (props) => {
 
       if(user.roles.includes("LABORATORY_HEAD")) setIsAllowedToFollow(true);
       let name = author.name.toLowerCase().split(" ");
-      if(user.roles == "RESEARCHER"){
-        console.log(author);
-        console.log("This is his name", name);
+      if(user.roles.includes("RESEARCHER")){
 
        const userName = {firstName: user.firstName.toLowerCase(), lastName: user.lastName.toLowerCase()};
         if((userName.firstName == name[0] && userName.lastName == name[1]) ||
@@ -134,7 +132,7 @@ const Author = (props) => {
   const allowedRoles = ["LABORATORY_HEAD", "TEAM_HEAD", "RESEARCHER"];
   useEffect(() => {
     getAuthorData();
-    if (allowedRoles.includes(user.roles)) {
+    if (allowedRoles.some((r) => user.roles.includes(r))) {
       getIfIsFollowing();
       findAllUsers();
     }

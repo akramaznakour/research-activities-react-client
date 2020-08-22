@@ -38,7 +38,7 @@ const Alert = ({
   return (
     <div
       className={`alert alert-${type} alert-dismissible border-bottom border-0 m-0 `}
-      roles="alert"
+      role="alert"
     >
       <div className="container">
         {(type === "danger" || type === "warning") && <AlertIcon />}
