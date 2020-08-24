@@ -108,8 +108,7 @@ const TeamsStatistics = () => {
 
   const updateFilteringOptionsData = useCallback(async () => {
     try {
-
-      let response = await userService.getFilteringOptions(user._id);
+      let  response = await userService.getDirectorFilteringOptions(user._id);
       if (response.data) setFilteringOptions(response.data);
       else throw Error();
     } catch (error) {

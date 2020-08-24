@@ -8,8 +8,6 @@ const MenuBar = withRouter(({ history, location, ...props }) => {
   const { user } = useContext(AppContext);
 
   let menus = getMenuForRole(user.roles);
-  if(user.isDirector)
-    menus = [...menus, ...getMenuForRole("RESEARCH_DIRECTOR")];
  
 
   return (

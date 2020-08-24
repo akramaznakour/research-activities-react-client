@@ -115,7 +115,8 @@ const AuthorReport = ({ author }) => {
               <Text style={styles.tableCell}>IF</Text>
             </View>
           </View>
-          {author.publications.map((publication, index) => (
+          {author.publications
+          .map((publication, index) => (
             <View key={index} style={styles.tableRow}>
               <View style={{ ...styles.tableCol, width: "80%" }}>
                 <Text style={styles.tableCell}>{publication.title}</Text>
