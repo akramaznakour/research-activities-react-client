@@ -40,7 +40,10 @@ const Publication = ({
       }
       const jouranlNameQuery = jouranlName.replace("/", "").replace("\\", "");
 
-      const response = await scraperService.getJournalData(jouranlNameQuery);
+      const response = await scraperService.getJournalData(
+        jouranlNameQuery,
+        publication.year
+      );
       if (response.data.error || response.data.status === 404) {
         setNoResultFound(true);
         updatePublication(index, {
