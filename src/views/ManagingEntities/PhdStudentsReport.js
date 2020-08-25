@@ -106,7 +106,7 @@ const PhdStudentsReport = ({ printOptions, students, user }) => {
               ].join("-");
               if (printOptions.type === 0) return true;
               if (printOptions.type === 1) return student.end <= stringToday;
-              if (printOptions === 2) return student.end > stringToday;
+              if (printOptions.type === 2) return student.end > stringToday;
             })
             .map((student, index) => (
               <View key={index} style={styles.tableRow}>
