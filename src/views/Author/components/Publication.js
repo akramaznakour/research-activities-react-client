@@ -95,27 +95,39 @@ const Publication = ({
       <td style={{ width: "60%" }}>
         {publication.title}
         {publication.authors && (
-          <small className="d-block text-muted text-truncate mt-n1">
+          <small
+            style={{ whiteSpace: "break-spaces " }}
+            className="d-block text-muted text-truncate mt-n1"
+          >
             {publication.authors.join(", ")}
           </small>
         )}
 
         {publication.source && (
-          <small className="d-block text-muted text-truncate mt-n1">
+          <small
+            style={{ whiteSpace: "break-spaces " }}
+            className="d-block text-muted text-truncate mt-n1"
+          >
             {publication.source}
           </small>
         )}
 
         {publication.extraInformation &&
           publication.extraInformation["Conference"] && (
-            <small className="d-block text-muted text-truncate mt-n1">
+            <small
+              style={{ whiteSpace: "break-spaces " }}
+              className="d-block text-muted text-truncate mt-n1"
+            >
               {publication.extraInformation["Conference"]}
             </small>
           )}
 
         {publication.extraInformation &&
           publication.extraInformation["Journal"] && (
-            <small className="d-block text-muted text-truncate mt-n1">
+            <small
+              style={{ whiteSpace: "break-spaces " }}
+              className="d-block text-muted text-truncate mt-n1"
+            >
               {publication.extraInformation["Journal"]}
             </small>
           )}
