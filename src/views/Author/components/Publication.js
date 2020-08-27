@@ -92,7 +92,7 @@ const Publication = ({
   );
   return (
     <tr style={{ whiteSpace: "break-spaces " }} key={publication.title}>
-      <td style={{ width: "55%" }}>
+      <td style={{ width: "60%" }}>
         {publication.title}
         {publication.authors && (
           <small className="d-block text-muted text-truncate mt-n1">
