@@ -7,7 +7,7 @@ const makeScraperService = (api) => ({
   authorSearch: (authorName) => api.get(`/author-search/${authorName}`),
   getAuthorData: (platform, authorId) =>
     api.get(`/author/${platform}/${authorId}`),
-  getJournalData: (jouranlName) => api.get(`/journal/${jouranlName}`),
+  getJournalData: (jouranlName,year) => api.get(`/journal/${jouranlName}/${year}`),
 });
 
 const makeUserService = (api) => ({
@@ -74,7 +74,8 @@ const makeLaboratoryService = (api) => ({
   getFreeLaboratories: () => api.get(`/free-laboratories`),
   associateHeadToLaboratory: (head_id, lab_id) =>
     api.get(`/entitle-laboratory/${head_id}/${lab_id}`),
-  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`)
+  getLaboratoriesOfDirector: (user_id) => api.get(`/laboratories-of-director/${user_id}`),
+  getNodesForOrgChart: () => api.get(`/nodesForOrgChart`)
 });
 
 const makeTeamService = (api) => ({
