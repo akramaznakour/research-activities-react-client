@@ -10,7 +10,7 @@ import "c3/c3.css";
 import LabFilter from "../components/LabFilter";
 import NoResultFound from "../components/NoResultFound";
 
-const TeamsStatistics = () => {
+const Report = () => {
   const [researchersStatistics, setResearchersStatistics] = useState([]);
   const [teamsStatistics, setTeamsStatistics] = useState([]);
 
@@ -31,81 +31,30 @@ const TeamsStatistics = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { user, ApiServices } = useContext(AppContext);
-  const { statisticsService, userService } = ApiServices;
+  const { statisticsService, userService, scraperService } = ApiServices;
 
-  const [chartVersion, setChartVersion] = useState(0);
-  const [chart, setChart] = useState({
-    data: {
-      unload: true,
-      x: "x",
-      type: "bar",
-      columns: [],
-    },
-  });
+  
 
-  const getTeamStatistics = useCallback(()=>{
-    let yearsRange = [];
-    let teamStats= {};
-    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};  
-    filteredResearchersStatistics
-      .map((usersStatistic) =>
-      
-       {
-         yearsRange.map((year)=>{
-
-          teamStats[year]=teamStats[year]+(usersStatistic.yearlyPublications[year] ?? 0)
-         })
-         
-       }
-         
-        
-      );
-      console.log(teamStats);
-      if(filter != null){
-         setTeamsStatistics( teamsStatistics=> teamsStatistics.concat({
-           'team': filter.team_abbreviation,
-           'publications': teamStats
-         })
-          );
-
-         console.log(filter.team_abbreviation);
-         console.log(teamsStatistics);
+  const getPublicationDetails = useCallback(async(publication) =>{
+    try {
+      console.log("getting details");
+      let jouranlName = publication.title;
+      const jouranlNameQuery = jouranlName.replace("/", "").replace("\\", "");
+      const response = await scraperService.getJournalData(jouranlNameQuery);
+      if (response.data.error || response.data.status === 404) {
+      console.log("error")
+        }
+       else {
+        console.log("data",response.data)
+          }
       }
-  })
+      catch(error){
 
-  const updateChart = useCallback(() => {
-    let yearsRange = [];
-    let teamStats= {};
-    for (let i = dateRange.start; i <= dateRange.end; i++){ yearsRange.push(i); teamStats[i]=0};   
+      }
     
-      const columns = teamsStatistics
-      .map((teamStatistics) =>
-      
-        [teamStatistics.team].concat(
-          yearsRange.map((year) =>  teamStatistics.publications[year] ?? 0)
-        ) 
-      )
-      
-      .concat([["x"].concat(yearsRange)]);
-    
-    setChart(() => ({
-     
-      data:{
-      x: "x",
-        columns,
-        type: 'line',
-        
-      
-    }}));
-    console.log(columns);
-    setChartVersion(chartVersion + 1);
-  }, [
-    chartVersion,
-    dateRange.end,
-    dateRange.start,
-    filteredResearchersStatistics,
-  ]);
+});
 
+  
   const updateFilteringOptionsData = useCallback(async () => {
     try {
 
@@ -129,15 +78,18 @@ const TeamsStatistics = () => {
 
   const updateStatistics = () => {};
   useEffect(() => {
-    updateChart();
+  
   }, [filteredResearchersStatistics, dateRange, teamsStatistics]);
 
   useEffect(() => {
-    getTeamStatistics();
+ 
+    console.log(researchersStatistics);
   }, [filteredResearchersStatistics, dateRange]);
 
 
   useEffect(() => {
+    console.log(researchersStatistics);
+
     updateFilteringOptionsData();
   }, [updateFilteringOptionsData]);
 
@@ -145,6 +97,9 @@ const TeamsStatistics = () => {
     if (!filter) return;
     if (!isSearchActive) setIsSearchActive(true);
     updateFollowedUsersData();
+    console.log(researchersStatistics);
+    getPublicationDetails({ title: "Performance Evaluation of Low-Power Wide Area based on LoRa Technology for Smart Metering",
+    year: "2019" })
   }, [filter, isSearchActive, updateFollowedUsersData]);
 
   useEffect(() => {
@@ -156,6 +111,8 @@ const TeamsStatistics = () => {
       (user) => user.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
     );
     setFilteredResearchersStatistics(a);
+    console.log(researchersStatistics);
+     
   }, [searchTerm, researchersStatistics]);
 
   
@@ -184,44 +141,9 @@ const TeamsStatistics = () => {
             }}
           />
         </div>
-        <div className="col-md-8">
-          <div className="card">
-            <div id="chartData-development-activity" className="mt-4">
-              <div
-                id="apexchartDatas28b504"
-                className="apexchartDatas-canvas apexchartDatas28b504 apexchartDatas-theme-light"
-              >
-                 {filteredResearchersStatistics.length > 0 && (
-                  <C3Chart
-                    key={chartVersion}
-                    data={chart.data}
-                    unloadBeforeLoad="true"
-                    title={{
-                      text: "Nombre des publications par année",
-                    }}
-                    legend={{
-                      show: true,
-                    }}
-                  />
-                  )}
-                  {filteredResearchersStatistics.length === 0 && (
-                  <NoResultFound query={searchTerm} />
-                )}
-             
-              </div>
-            </div>
-            
-            <div className="resize-triggers">
-              <div className="expand-trigger">
-                <div style={{ width: "579px", height: "0px" }}></div>
-              </div>
-              <div className="contract-trigger"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+       </div>
     </div>
   );
 };
 
-export default TeamsStatistics;
+export default Report;

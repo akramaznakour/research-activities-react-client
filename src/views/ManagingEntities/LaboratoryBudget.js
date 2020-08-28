@@ -41,15 +41,15 @@ import AddBudget from "../components/AddBudget";
       end:new Date().getFullYear()+1,
     });
   
-    const title = "Ajouter budget de l'année prochaine"
-  
+    const title = "Ajouter budget de l'année prochaine";
+
     const inputsSkeleton = [
       { name: "budget", label: columns[0], type: "input" },
       {
         name: "year",
         label: columns[1],
         type: "select",
-        options: [2015,2016,2017,2018,2019,2020],
+        options: Array(2040 - 2015 + 1).fill().map((_, idx) => 2015 + idx),
       },
     ];
   
@@ -86,16 +86,14 @@ import AddBudget from "../components/AddBudget";
   
 
     const updateChart = useCallback(() => {
-      let yearsRange = [];
       let budget ={2015 : 0}
       if(laboratories[0].budget!== undefined)
       {budget = laboratories[0].budget;}
      
 
-      for (let i = 2015; i <= new Date().getFullYear()+1; i++) yearsRange.push(i);
   
-      const columns = [["budget"].concat(yearsRange.map((year) =>budget[year] ?? 0))]
-      .concat([["x"].concat(yearsRange)]);
+      const columns = [["budget"].concat(Object.keys(budget).map((year) =>budget[year] ?? 0))]
+      .concat([["x"].concat(Object.keys(budget))]);
       setChart(() => ({
         data: {
           x: "x",
@@ -116,11 +114,16 @@ import AddBudget from "../components/AddBudget";
      console.log(year);
      console.log(inputs.budget);
      console.log(inputs.year);
-     laboratory.budget[inputs.year]=parseInt(inputs.budget);
+     let lab= laboratory;
+     console.log(lab);
+     if(laboratory.budget === undefined)lab.budget={};
+     
+     
+     lab.budget[inputs.year]=parseInt(inputs.budget);
      
       try {
         const response = await laboratoryService.updateLaboratory(
-         laboratory,
+         lab,
          
         );
 
@@ -187,8 +190,9 @@ import AddBudget from "../components/AddBudget";
             /*subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}*/
           />
         </div>
+        
         <div >
-         {(laboratories.length !==0 && laboratories[0].budget!== undefined)&&
+         {laboratories.length !==0 &&
             <BudgetForm
               {...{
                 inputs,
@@ -201,19 +205,21 @@ import AddBudget from "../components/AddBudget";
               }}
             />}
           </div>
-        {laboratories[0].budget === undefined && <AddBudget/>}
+      
           <br/>
-          
+          <div className="row">
+          <div className="col-md-5">
           <div className="table-responsive">
           <div className="card">    
-          {(laboratories.length !==0 && laboratories[0].budget!== undefined)&& <BudgetTable
+          {(laboratories.length !==0)&& <BudgetTable
                   labBudget={laboratories[0].budget}
-                  dateRange={dateRange}
+                 
                 />
           }
               </div>   
             </div> 
-            <br/>  
+            </div>
+            <div className="col-md-7">
         <div className="card">        
               <div
                 id="apexchartDatas28b504"
@@ -233,10 +239,10 @@ import AddBudget from "../components/AddBudget";
                         }}
                       />}
                 
-               
+                </div>
               </div>
             </div>
-          
+            </div>
 
       </Fragment>
     );

@@ -49,21 +49,22 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const PhdStudentsReport = ({ students, user }) => {
+const PhdStudentsReport = ({ printOptions, students, user }) => {
   useEffect(() => {
     console.log("should update");
-  }, [students]);
-
+  }, [students, printOptions]);
   return (
     <Document
       author={[user.firstName, user.lastName].join(" ")}
       keywords={[user.firstName, user.lastName].join(" ")}
       subject={[user.firstName, user.lastName].join(" ")}
       title={[user.firstName, user.lastName].join(" ")}
-      
     >
       <Page orientation="landscape" style={styles.body}>
-        <Text style={styles.subtitle}>{`Vos Doctorants Monsieur ${[user.firstName, user.lastName].join(" ")}:`}</Text>
+        <Text style={styles.subtitle}>{`Vos Doctorants Monsieur ${[
+          user.firstName,
+          user.lastName,
+        ].join(" ")}:`}</Text>
         <View style={styles.table}>
           {/* TableHeader */}
           <View style={styles.tableRow}>
@@ -84,7 +85,9 @@ const PhdStudentsReport = ({ students, user }) => {
               <Text style={styles.tableCell}>Intitulé de la Thèse</Text>
             </View>
             <View style={{ ...styles.tableCol, width: "20%" }}>
-              <Text style={styles.tableCell}>Cotutelle (CT) - Codirection (CD)</Text>
+              <Text style={styles.tableCell}>
+                Cotutelle (CT) - Codirection (CD)
+              </Text>
             </View>
             <View style={{ ...styles.tableCol, width: "20%" }}>
               <Text style={styles.tableCell}>Année de 1 ère inscription</Text>
@@ -93,34 +96,46 @@ const PhdStudentsReport = ({ students, user }) => {
               <Text style={styles.tableCell}>Date de soutenance</Text>
             </View>
           </View>
-          {students.map((student, index) => (
-            <View key={index} style={styles.tableRow}>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.supervisor}</Text>
+          {students
+            .filter((student) => {
+              let today = new Date();
+              let stringToday = [
+                today.getFullYear(),
+                String(today.getMonth() + 1).padStart(2, "0"),
+                String(today.getDate()).padStart(2, "0"),
+              ].join("-");
+              if (printOptions.type === 0) return true;
+              if (printOptions.type === 1) return student.end <= stringToday;
+              if (printOptions.type === 2) return student.end > stringToday;
+            })
+            .map((student, index) => (
+              <View key={index} style={styles.tableRow}>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.supervisor}</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.coSupervisor} </Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.lastName} </Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.firstName}</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "70%" }}>
+                  <Text style={styles.tableCell}>{student.thesisTitle}</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.cotutelle}</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.start}</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "20%" }}>
+                  <Text style={styles.tableCell}>{student.end}</Text>
+                </View>
               </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.coSupervisor} </Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.lastName} </Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.firstName}</Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "70%" }}>
-                <Text style={styles.tableCell}>{student.thesisTitle}</Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.cotutelle}</Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.start}</Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "20%" }}>
-                <Text style={styles.tableCell}>{student.end}</Text>
-              </View>
-            </View>
-          ))}
+            ))}
         </View>
       </Page>
     </Document>
