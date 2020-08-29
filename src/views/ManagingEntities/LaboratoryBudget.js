@@ -190,6 +190,7 @@ import AddBudget from "../components/AddBudget";
             /*subTitle={` Budget de lannée prochaine : ${laboratories[0].budget[new Date().getFullYear()+1]===undefined? 0:laboratories[0].budget[new Date().getFullYear()+1]} DH`}*/
           />
         </div>
+        
         <div >
          {laboratories.length !==0 &&
             <BudgetForm
@@ -206,7 +207,8 @@ import AddBudget from "../components/AddBudget";
           </div>
       
           <br/>
-          
+          <div className="row">
+          <div className="col-md-5">
           <div className="table-responsive">
           <div className="card">    
           {(laboratories.length !==0)&& <BudgetTable
@@ -216,7 +218,8 @@ import AddBudget from "../components/AddBudget";
           }
               </div>   
             </div> 
-            <br/>  
+            </div>
+            <div className="col-md-7">
         <div className="card">        
               <div
                 id="apexchartDatas28b504"
@@ -236,10 +239,10 @@ import AddBudget from "../components/AddBudget";
                         }}
                       />}
                 
-               
+                </div>
               </div>
             </div>
-          
+            </div>
 
       </Fragment>
     );

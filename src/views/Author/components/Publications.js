@@ -5,7 +5,21 @@ import "datatables";
 
   const Publications = ({ author, setAuthor ,platform}) => {
   useEffect(() => {
-    $(".datatable").DataTable();
+    $(".datatable").DataTable({
+      oLanguage: {
+        sInfo:
+          "Affichage de la publication _START_ à _END_ sur _TOTAL_ publications",
+        sInfoEmpty: "Affichage des publications 0 à 0 sur 0 publications",
+        sSearch: "Rechercher ",
+        sLengthMenu: "Afficher _MENU_ publications",
+        oPaginate: {
+          sFirst: "Premier",
+          sLast: "Dernier",
+          sNext: "Suivant",
+          sPrevious: "Précédent",
+        },
+      },
+    });
   }, []);
 
   const updatePublication = (index, publication) => {

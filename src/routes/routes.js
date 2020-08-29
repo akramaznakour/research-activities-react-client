@@ -38,6 +38,7 @@ import LaboratoryBudget from "../views/ManagingEntities/LaboratoryBudget";
 
 import EstablishmentBudget from "../views/ManagingEntities/EstablishmentBudget";
 import AddBudget from "../views/components/AddBudget";
+import Report from "../views/Statistics/Report";
 
 
 
@@ -214,7 +215,7 @@ const StatisticsPaths = {
 
 const budgetPath = {
 title: "Budget",
-  isDropdown: false,
+  isDropdown: true,
   icon : TeamIcon,
   routes: [
     {
@@ -226,7 +227,15 @@ title: "Budget",
   icon: TeamIcon,
   inMenu: true,
     },
-  
+    {
+
+      title: "Rapport",
+      path: "/Rapport",
+      component: Report,
+     roles: ["LABORATORY_HEAD"],
+  icon: TeamIcon,
+  inMenu: true,
+    },
     {
       title: "Budget",
       path: "/Budget-CED",

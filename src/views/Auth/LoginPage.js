@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import image from "../../assets/images/logo.png";
 import { AppContext } from "../../context/AppContext";
 import ApplicationAlerts from "../components/ApplicationAlerts";
+import { css } from "@emotion/core";
+import ClipLoader from "react-spinners/ClipLoader";
 
 function LoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,7 +14,10 @@ function LoginPage() {
   const { ApiServices, setUser, alertService } = useContext(AppContext);
   const { pushAlert } = alertService;
   const { authentificationService } = ApiServices;
+  const [Loading, setLoading] = useState(false);
   const history = useHistory();
+
+ 
 
   useEffect(() => {
     setUser();
@@ -40,12 +45,14 @@ function LoginPage() {
           message: "Vous êtes connecté avec succès",
         });
 
+
         setTimeout(() => {
           if (response.data.hasConfirmed) history.push("/");
           else history.push("/settings/account");
         }, 1000);
       } else throw Error();
     } catch (e) {
+      setLoading(false);
       pushAlert({
         message:
           "Votre email ou mot de passe n'est pas correct! essayez encore s'il vous plait",
@@ -92,10 +99,24 @@ function LoginPage() {
                 </div>
                 <ApplicationAlerts />
                 <div className="card-footer">
-                  <button type="submit" className="btn btn-block  btn-primary ">
+                  <button type="submit" className="btn btn-block  btn-primary " onClick={()=>setLoading(true)}>
                     Se connecter
                   </button>
-                </div>
+                  </div>
+                  <ClipLoader
+          css = {
+            css`
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-color: blue;
+          `
+          }
+          size={80}
+          color={"#123abc"}
+          loading={Loading}
+        />
+                
               </form>
             </div>
           </div>
