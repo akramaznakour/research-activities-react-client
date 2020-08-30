@@ -31,6 +31,7 @@ import {
   TeamIcon,
   SettingsIcon,
   PhdIcon,
+  BudgetIcon,
 } from "../views/components/icons";
 import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
@@ -216,7 +217,7 @@ const StatisticsPaths = {
 const budgetPath = {
 title: "Budget",
   isDropdown: true,
-  icon : TeamIcon,
+  icon : BudgetIcon,
   routes: [
     {
 
