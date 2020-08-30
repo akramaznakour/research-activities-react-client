@@ -103,7 +103,7 @@ const entitiesPathsCategory = {
       title: "Laboratoire",
       path: "/Laboratory/:laboratoryId",
       component: Laboratory,
-      roles: ["CED_HEAD", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD", "RESEARCH_DIRECTOR"],
       inMenu: false,
     },
     
