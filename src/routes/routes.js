@@ -22,6 +22,7 @@ import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
 import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
 import TeamOfDirector from "../views/ManagingEntities/DirectorViews/TeamOfDirector";
 import DirectorTeamsStatistics from "../views/Statistics/DirectorTeamsStatistics";
+import DirectorLabsStatistics from "../views/Statistics/DirectorLabStatistics";
 
 
 import {
@@ -123,8 +124,8 @@ const researchDirectorPaths = {
     },
     {
       title: "Statistiques de laboratoires",
-      path: "/lab-statistics",
-      component: LabStatistics,
+      path: "/director-lab-statistics",
+      component: DirectorLabsStatistics,
       icon: StatisticsIcon,
       roles: ["RESEARCH_DIRECTOR"],
       inMenu: true,
