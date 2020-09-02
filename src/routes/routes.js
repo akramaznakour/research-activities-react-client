@@ -22,6 +22,7 @@ import ResearchDirector from "../views/ManagingAccounts/ResearchDirector";
 import LaboratoriesOfDirector from "../views/ManagingEntities/DirectorViews/LaboratoriesOfDirector";
 import TeamOfDirector from "../views/ManagingEntities/DirectorViews/TeamOfDirector";
 import DirectorTeamsStatistics from "../views/Statistics/DirectorTeamsStatistics";
+import DirectorLabsStatistics from "../views/Statistics/DirectorLabStatistics";
 
 
 import {
@@ -31,7 +32,9 @@ import {
   TeamIcon,
   SettingsIcon,
   PhdIcon,
+
   BudgetIcon,
+
 } from "../views/components/icons";
 import TeamsStatistics from "../views/Statistics/TeamsStatistics";
 import LabStatistics from "../views/Statistics/labStatistics";
@@ -102,7 +105,7 @@ const entitiesPathsCategory = {
       title: "Laboratoire",
       path: "/Laboratory/:laboratoryId",
       component: Laboratory,
-      roles: ["CED_HEAD", "CED_HEAD"],
+      roles: ["CED_HEAD", "CED_HEAD", "RESEARCH_DIRECTOR"],
       inMenu: false,
     },
     
@@ -123,8 +126,8 @@ const researchDirectorPaths = {
     },
     {
       title: "Statistiques de laboratoires",
-      path: "/lab-statistics",
-      component: LabStatistics,
+      path: "/director-lab-statistics",
+      component: DirectorLabsStatistics,
       icon: StatisticsIcon,
       roles: ["RESEARCH_DIRECTOR"],
       inMenu: true,
@@ -216,7 +219,7 @@ const StatisticsPaths = {
 
 const budgetPath = {
 title: "Budget",
-  isDropdown: true,
+  isDropdown: false,
   icon : BudgetIcon,
   routes: [
     {
@@ -225,18 +228,10 @@ title: "Budget",
       path: "/Budget",
       component: LaboratoryBudget,
      roles: ["LABORATORY_HEAD"],
-  icon: TeamIcon,
+  icon: BudgetIcon,
   inMenu: true,
     },
-    {
-
-      title: "Rapport",
-      path: "/Rapport",
-      component: Report,
-     roles: ["LABORATORY_HEAD"],
-  icon: TeamIcon,
-  inMenu: true,
-    },
+    
     {
       title: "Budget",
       path: "/Budget-CED",
@@ -249,7 +244,20 @@ title: "Budget",
   ]
 }
     
-
+const reportPath = {
+  title: "Rapport",
+  isDropdown: false,
+  routes: [
+    {
+      title: "Rapport",
+      path: "/Rapport",
+      component: Report,
+      roles: ["LABORATORY_HEAD"],
+      icon: TeamIcon,
+      inMenu: true,
+    },
+  ],
+};
 
 const followedResearchersPaths = {
   title: "Chercheur suivis",
@@ -356,6 +364,7 @@ const menus = [
   StatisticsPaths,
   budgetPath,
   errorPathsCategory,
+  reportPath
   
 ];
 
@@ -369,7 +378,9 @@ const routes = [
   ...phdStudentsPaths.routes,
   ...StatisticsPaths.routes,
   ...budgetPath.routes,
+  ...reportPath.routes,
   ...errorPathsCategory.routes,
+  
 ];
 
 export { routes, menus };
