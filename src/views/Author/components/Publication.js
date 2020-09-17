@@ -54,7 +54,7 @@ const Publication = ({
         setIsFetched(true);
         updatePublication(index, {
           ...publication,
-          IF: response.data.journal["Impact Factor"],
+          IF: response.data.journal["IF"],
           SJR: response.data.journal["SJR"],
           searchedFor: true,
         });
