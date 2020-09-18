@@ -100,12 +100,11 @@ const Notifications = () => {
 
         const responses = await Promise.all(
           newPublications.map(
-            async ({ title }) =>
+            async (publication) =>
               await notificationsService.notifyFolloweers({
                 authorId: followedUser.authorId,
-                publication: title,
+                publication,
                 followedUserId: followedUser.user_id,
-                scrapedPublications,
               })
           )
         );
