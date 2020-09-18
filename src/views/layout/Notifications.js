@@ -103,6 +103,7 @@ const Notifications = () => {
             async (publication) =>
               await notificationsService.notifyFolloweers({
                 authorId: followedUser.authorId,
+                author_user_id: followedUser.user_id,
                 publication,
                 followedUserId: followedUser.user_id,
               })
