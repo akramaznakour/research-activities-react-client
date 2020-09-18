@@ -219,7 +219,7 @@ const Notification = ({ notification, markAsRead }) => {
       <Link
         onClick={(e) => {
           e.preventDefault();
-          history.push("/author/" + notification.authorId);
+          history.push("/profile/" + notification.author_user_id);
           pushAlert({
             type: "info",
             autoClose: false,
