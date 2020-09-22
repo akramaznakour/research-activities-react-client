@@ -94,44 +94,35 @@ const Author = (props) => {
     [authorId, author]
   );
 
-     async (author) => {
+  const checkFollowAuthorization = useCallback(async (author) => {
+    const trimName = (n) =>
+      n.toLowerCase().replace(" ", "").replace(/[\s ,.]/gi, "");
 
-      if(user.roles.includes("LABORATORY_HEAD")) setIsAllowedToFollow(true);
-      let name = author.name.toLowerCase().split(" ");
-      if(user.roles.includes("RESEARCHER")){
+    const possibleNames = [
+      trimName(user.firstName) + trimName(user.lastName),
+      trimName(user.lastName) + trimName(user.firstName),
+    ];
 
-       const userName = {firstName: user.firstName.toLowerCase(), lastName: user.lastName.toLowerCase()};
-        if((userName.firstName == name[0] && userName.lastName == name[1]) ||
-            (userName.firstName == name[1] && userName.lastName == name[0]))
-            setIsAllowedToFollow(true)
-        else
-            setIsAllowedToFollow(false);
-      }
+    console.log("possibleNames");
+    console.log(possibleNames);
+    console.log("trimName(author.name)");
+    console.log(author.name);
+    if (
+      possibleNames.includes(trimName(author.name)) ||
+      ["LABORATORY_HEAD", "TEAM_HEAD"].some((r) => user.roles.includes(r))
+    ) {
+      setIsAllowedToFollow(true);
+      console.log("authorized");
+    }
+  }, []);
 
-      if(user.roles.includes("TEAM_HEAD")){
-        const response = await teamService.findTeam(user.teamsHeaded[0]._id);
-        const team = response.data;
-        let teamMember = team.members.filter((member) => {
-          const memberName = {firstName: member.firstName.toLowerCase(), lastName: member.lastName.toLowerCase()};
-
-          return ((memberName.firstName == name[0] && memberName.lastName == name[1]) ||
-                  (memberName.firstName == name[1] && memberName.lastName == name[0]));
-        })
-
-        console.log(teamMember);
-        if(!teamMember.length)
-          setIsAllowedToFollow(false);
-        else setIsAllowedToFollow(true);
-      }
-    },
-    []
-  );
-
-
-  const allowedRoles = ["LABORATORY_HEAD", "TEAM_HEAD", "RESEARCHER"];
   useEffect(() => {
     getAuthorData();
-    if (allowedRoles.some((r) => user.roles.includes(r))) {
+    if (
+      ["LABORATORY_HEAD", "TEAM_HEAD", "RESEARCHER"].some((r) =>
+        user.roles.includes(r)
+      )
+    ) {
       getIfIsFollowing();
       findAllUsers();
     }
