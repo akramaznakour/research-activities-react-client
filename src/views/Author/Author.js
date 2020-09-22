@@ -42,7 +42,7 @@ const Author = (props) => {
       const response = await scraperService.getAuthorData(platform, authorId);
       if (response.data.author) {
         setAuthor(response.data.author);
-        checkFollowAuthorisation(response.data.author);
+        checkFollowAuthorization(response.data.author);
       } 
       else if (response.data.error) setNoResultFound(true);
       else {
@@ -94,7 +94,6 @@ const Author = (props) => {
     [authorId, author]
   );
 
-  const checkFollowAuthorisation = useCallback(
      async (author) => {
 
       if(user.roles.includes("LABORATORY_HEAD")) setIsAllowedToFollow(true);
