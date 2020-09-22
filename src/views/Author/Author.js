@@ -26,7 +26,7 @@ const Author = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [noResultFound, setNoResultFound] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
-  const [isAllowedToFollow, setIsAllowedToFollow] = useState(null); 
+  const [isAllowedToFollow, setIsAllowedToFollow] = useState(false);
   const [isSendingFollow, setsSendingFollow] = useState(false);
   const [users, setUsers] = useState([]);
   const { user, ApiServices, alertService } = useContext(AppContext);
