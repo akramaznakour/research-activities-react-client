@@ -26,6 +26,9 @@ const HomePage = () => {
         </p>
         <div className="empty-action">
           <button
+            onClick={() => {
+              document.getElementById("author-search-input").focus();
+            }}
             className="btn btn-primary"
           >
             <LoopIcon />
