@@ -25,10 +25,12 @@ const HomePage = () => {
           vous recherchez.
         </p>
         <div className="empty-action">
-          <Link to="/" className="btn btn-primary">
+          <button
+            className="btn btn-primary"
+          >
             <LoopIcon />
             Rechercher un auteur
-          </Link>
+          </button>
         </div>
       </div>
 
