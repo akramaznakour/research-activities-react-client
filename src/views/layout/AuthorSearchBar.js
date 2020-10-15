@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
 import { LoopIcon } from "../components/icons";
 
 const AuthorSearchBar = ({ history }) => {
+  const { user } = useContext(AppContext);
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const authorName = e.target.value;
       if (authorName.trim().length === 0) return;
-      history.push("/author-search/" + authorName);
+      if (user) history.push("/author-search/" + authorName);
+      else history.push("/visitors/author-search/" + authorName);
     }
   };
 
