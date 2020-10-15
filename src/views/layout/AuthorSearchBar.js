@@ -22,7 +22,7 @@ const AuthorSearchBar = ({ history }) => {
           onKeyDown={handleKeyDown}
           type="text"
           className="form-control form-control-flush w-100"
-          placeholder="Rechercher ici un auteur ..."
+          placeholder="Rechercher ici un auteur. Exemple : Nom Prenom"
         />
       </div>
     </form>
