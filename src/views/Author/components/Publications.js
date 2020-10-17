@@ -43,16 +43,18 @@ const Publications = ({ author, setAuthor, platform }) => {
           </thead>
           <tbody>
             {author.publications &&
-              author.publications.map((publication, index) => (
-                <Publication
-                  index={index}
-                  platform={platform}
-                  key={publication.title}
-                  publication={publication}
-                  updatePublication={updatePublication}
-                  author={author}
-                />
-              ))}
+              author.publications
+                .sort((a, b) => b.title - a.title)
+                .map((publication, index) => (
+                  <Publication
+                    index={index}
+                    platform={platform}
+                    key={index}
+                    publication={publication}
+                    updatePublication={updatePublication}
+                    author={author}
+                  />
+                ))}
           </tbody>
         </table>
       </div>
