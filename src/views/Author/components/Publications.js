@@ -16,8 +16,9 @@ const Publications = ({ author, setAuthor, platform }) => {
   }, []);
 
   const updatePublication = (index, publication) => {
+    const i = author.publications.map(p=>p.title).indexOf(publication.title);
     let tempPublications = author.publications;
-    tempPublications[index] = publication;
+    tempPublications[i] = publication;
     setAuthor(() => ({
       ...author,
       publications: tempPublications,
