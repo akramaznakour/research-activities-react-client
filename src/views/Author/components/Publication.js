@@ -81,7 +81,7 @@ const Publication = ({
     if (!publication.IF && !publication.SJR && !publication.searchedFor)
       setTimeout(() => {
         if (isMounted) getJournalData();
-      }, index * 4000);
+      }, index * 2000 + 2000);
 
     return () => {
       isMounted = false;
