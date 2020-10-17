@@ -28,7 +28,7 @@ const Publications = ({ author, setAuthor, platform }) => {
   return (
     <div className="card">
       <div className="table-responsive">
-        <table className="table card-table table-vcenter text-nowrap datatable">
+        <table className="table card-table table-vcenter text-nowrap ">
           <thead>
             <tr>
               <th>Titre</th>
