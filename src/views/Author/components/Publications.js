@@ -2,6 +2,18 @@ import React, { useEffect } from "react";
 import Publication from "./Publication";
 
 const Publications = ({ author, setAuthor, platform }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      const publicationsTmp = author.publications.map((p) => ({
+        ...p,
+        searchedFor: true,
+      }));
+      setAuthor(() => ({
+        ...author,
+        publications: publicationsTmp,
+      }));
+    }, author.publications.length * 4000);
+  }, []);
 
   const updatePublication = (index, publication) => {
     let tempPublications = author.publications;
