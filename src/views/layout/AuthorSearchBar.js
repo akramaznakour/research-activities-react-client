@@ -15,7 +15,7 @@ const AuthorSearchBar = ({ history }) => {
   };
 
   return (
-    <form className="form-inline w-50 mr-4 d-none d-md-flex">
+    <form className=" w-100 ">
       <div className="input-icon w-100">
         <span className="input-icon-addon">
           <LoopIcon />
